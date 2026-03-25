@@ -1,0 +1,143 @@
+/* ========== RESET + BODY ========== */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
+body{background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);min-height:100vh;padding:20px;}
+
+/* ========== LAYOUT CHUNG ========== */
+.admin-container{max-width:1200px;margin:0 auto;background:#fff;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,.1);overflow:hidden;}
+.admin-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:30px 40px;text-align:center;}
+.admin-header h1{font-size:2.5rem;margin-bottom:10px;font-weight:700;letter-spacing:.5px;}
+.admin-header .welcome{font-size:1.05rem;opacity:.9;}
+.admin-welcome{background:#f8f9fa;padding:18px 40px;border-bottom:1px solid #eaeaea;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.welcome-text{font-size:1.1rem;color:#333;}
+.admin-name{color:#667eea;font-weight:700;}
+.admin-content{padding:25px 40px;}
+.footer{text-align:center;padding:18px 20px;color:#718096;font-size:.9rem;}
+
+/* ========== DASHBOARD (INDEX) ========== */
+.dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;padding:30px 40px;}
+.dashboard-card{background:#fff;border-radius:12px;padding:26px 22px;text-align:center;text-decoration:none;color:#333;border:2px solid transparent;transition:.25s;box-shadow:0 5px 15px rgba(0,0,0,.05);}
+.dashboard-card:hover{transform:translateY(-5px);border-color:#667eea;box-shadow:0 10px 20px rgba(102,126,234,.15);}
+.card-icon{font-size:2.3rem;margin-bottom:12px;color:#667eea;}
+.card-title{font-size:1.25rem;font-weight:800;margin-bottom:8px;color:#2d3748;}
+.card-description{color:#718096;font-size:.95rem;line-height:1.5;}
+
+/* ========== TOOLBAR + SEARCH + ACTIONS ========== */
+.toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:18px;}
+.search-form{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.search-form input{padding:10px 12px;border-radius:10px;border:1px solid #d0d7de;min-width:280px;outline:none;background:#fff;}
+.search-form input:focus{border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,.15);}
+.action-buttons{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+
+/* ========== BUTTONS ========== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none;border:1px solid transparent;cursor:pointer;white-space:nowrap;transition:.2s;}
+.btn-primary{background:#667eea;color:#fff;}
+.btn-primary:hover{filter:brightness(.95);transform:translateY(-1px);}
+.btn-outline{background:#fff;border-color:#667eea;color:#667eea;}
+.btn-outline:hover{background:rgba(102,126,234,.08);transform:translateY(-1px);}
+
+/* ========== CARD ========== */
+.card{background:#fff;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,.05);overflow:hidden;}
+.card-pad{padding:18px;}
+
+/* ========== TABLE (LIST) ========== */
+.table-wrap{overflow:auto;border-radius:12px;}
+.table{width:100%;border-collapse:collapse;table-layout:fixed;min-width:920px;}
+.table thead{background:#f8f9fa;}
+.table th,.table td{padding:12px 10px;border-bottom:1px solid #eee;text-align:left;vertical-align:middle;word-wrap:break-word;overflow-wrap:anywhere;}
+.table tr:hover{background:#f1f5ff;}
+.table th:nth-child(1),.table td:nth-child(1){width:70px;}
+.table th:nth-child(3),.table td:nth-child(3){width:140px;}
+.table th:nth-child(4),.table td:nth-child(4){width:80px;}
+.table th:nth-child(5),.table td:nth-child(5){width:120px;}
+.table th:nth-child(6),.table td:nth-child(6){width:90px;}
+.table th:nth-child(7),.table td:nth-child(7){width:140px;}
+
+/* ========== BADGE ========== */
+.badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:13px;font-weight:800;}
+.badge-green{background:#d4edda;color:#155724;}
+.badge-red{background:#f8d7da;color:#721c24;}
+.badge-gray{background:#edf2f7;color:#2d3748;}
+.status-red {
+    background: #f8d7da; /* Dùng chung màu nền với badge-red của bạn */
+    color: #721c24;      /* Dùng chung màu chữ với badge-red của bạn */
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-block;
+}
+
+/* ========== IMAGE THUMB ========== */
+.thumb{width:55px;height:55px;object-fit:cover;border-radius:8px;border:1px solid #eee;background:#fff;display:block;}
+
+/* ========== LINKS ACTION ========== */
+.link-edit{color:#667eea;font-weight:800;text-decoration:none;}
+.link-delete{color:#e53e3e;font-weight:800;text-decoration:none;}
+.link-edit:hover,.link-delete:hover{text-decoration:underline;}
+
+/* ========== FORM (ADD/EDIT/IMPORT) ========== */
+.form-card{background:#fff;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,.05);padding:18px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-group label{font-weight:800;color:#2d3748;font-size:14px;}
+.form-group input,.form-group textarea,.form-group select{
+  padding:10px 12px;border-radius:10px;border:1px solid #d0d7de;outline:none;width:100%;background:#fff;
+}
+.form-group textarea{min-height:110px;resize:vertical;}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{
+  border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,.15);
+}
+.form-span-2{grid-column:1/-1;}
+.form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;}
+
+/* file input */
+input[type="file"]{width:100%;padding:10px 12px;border:1px solid #d0d7de;border-radius:10px;background:#fff;}
+
+/* CSV header box */
+code{display:block;background:#f8f9fa;border:1px dashed #e2e8f0;border-radius:10px;padding:12px;white-space:normal;word-break:break-word;line-height:1.6;}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width:768px){
+  .admin-header{padding:22px 18px;}
+  .admin-header h1{font-size:2rem;}
+  .admin-welcome{flex-direction:column;text-align:center;padding:16px 18px;}
+  .admin-content{padding:18px;}
+  .dashboard-grid{padding:20px;}
+  .search-form input{min-width:200px;width:100%;}
+  .form-grid{grid-template-columns:1fr;}
+}
+
+/* Màu nền nhẹ cho các Icon Box */
+.bg-primary-light { background-color: rgba(13, 110, 253, 0.1); }
+.bg-warning-light { background-color: rgba(255, 193, 7, 0.1); }
+.bg-success-light { background-color: rgba(25, 135, 84, 0.1); }
+.bg-info-light { background-color: rgba(13, 202, 240, 0.1); }
+
+.icon-box {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+/* Tinh chỉnh Sidebar - Bỏ bớt khoảng cách thừa */
+.admin-sidebar .sidebar-brand {
+    font-size: 1.5rem;
+    padding: 25px 20px;
+    letter-spacing: 1px;
+}
+
+.nav-link {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin: 4px 12px;
+    border-radius: 8px !important;
+}
+
+/* Content Area */
+.admin-content {
+    background-color: #f0f2f5; /* Màu nền xám nhẹ giúp nổi bật các Card trắng */
+}
+
