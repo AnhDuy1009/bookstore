@@ -16,11 +16,15 @@ class Cart extends Model
         'SoLuong'
     ];
 
-    public function user(){
+    // Quan hệ với User
+    public function user()
+    {
         return $this->belongsTo(User::class, 'IDNguoiDung');
     }
 
-    public function items(){
-        return $this->hasMany(CartItem::class, 'IDGioHang');
+    // Quan hệ với Book
+    public function book()
+    {
+        return $this->belongsTo(Book::class, 'IDSach');
     }
 }

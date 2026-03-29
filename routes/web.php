@@ -9,6 +9,7 @@ use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\OrderController; 
 use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\AuthController;
+use App\Http\Controllers\Frontend\ReviewController as FrontendReviewController;
 
 // --- ADMIN CONTROLLERS ---
 use App\Http\Controllers\Admin\DashboardController;
@@ -52,6 +53,8 @@ Route::group(['prefix' => 'password', 'as' => 'password.'], function () {
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::get('/authors/{id}', [BookController::class, 'author'])->name('authors.show');
 
 Route::prefix('books')->group(function () {
     Route::get('/', [BookController::class, 'index'])->name('books.index');           // Tất cả sách
@@ -100,10 +103,10 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Đánh giá sản phẩm
-    Route::post('/book/review', [BookController::class, 'review'])->name('book.review');
+    Route::post('/book/review', [FrontendReviewController::class, 'store'])->name('reviews.store');
+
 });
 
-/*
 /*
 |--------------------------------------------------------------------------
 | 5. HỆ THỐNG QUẢN TRỊ (ADMIN)

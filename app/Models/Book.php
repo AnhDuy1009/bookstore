@@ -11,17 +11,17 @@ class Book extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'TenSach', 'GiaBan', 'SoLuong', 'MoTa', 'AnhBia', 'IDTacGia', 'IDTheLoai'
+        'TenSach', 'GiaBan', 'SoLuongTon', 'MoTa', 'IDTacGia', 'IDDanhMuc', 'NhaXuatBan', 'NamXuatBan', 'SoTrang', 'Link_Anh_Bia'
     ];
 
     // Lấy thông tin tác giả
-    public function author() {
+    public function tacGia() {
         return $this->belongsTo(Author::class, 'IDTacGia', 'ID');
     }
 
     // Lấy thông tin thể loại
-    public function category() {
-        return $this->belongsTo(Category::class, 'IDTheLoai', 'ID');
+    public function danhMuc() {
+        return $this->belongsTo(Category::class, 'IDDanhMuc', 'ID');
     }
 
     // Lấy danh sách đánh giá của sách này
@@ -32,5 +32,6 @@ class Book extends Model
     // Lấy các chi tiết đơn hàng có chứa sách này
     public function orderItems() {
         return $this->hasMany(OrderItem::class, 'IDSach', 'ID');
+        
     }
 }

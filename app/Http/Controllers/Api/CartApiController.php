@@ -8,16 +8,53 @@ use App\Services\CartService;
 
 class CartApiController extends Controller
 {
-    // TODO: Viết API lấy số lượng item hiện tại để hiển thị trên icon Giỏ hàng (Navbar)
-    public function getCount()
+    protected $cartService;
+
+    // Khởi tạo CartService
+    public function __construct(CartService $cartService)
     {
-        // TODO: Trả về JSON: ['count' => $total]
+        $this->cartService = $cartService;
     }
 
-    // TODO: Viết API cập nhật số lượng khi user bấm nút +/- trong trang giỏ hàng
+    // API lấy số lượng item trong giỏ hàng
+    public function getCount()
+    {
+        $cart = session()->get('cart', []);
+
+        $total = 0;
+
+        foreach ($cart as $item) {
+            $total += $item['quantity'];
+        }
+
+        return response()->json([
+            'count' => $total
+        ]);
+    }
+
+    // API cập nhật số lượng sản phẩm khi bấm +/- 
     public function updateQuantity(Request $request)
     {
-        // TODO: Nhận ID và SoLuong mới
-        // TODO: Trả về JSON: ['status' => 'success', 'new_total' => $price]
+        $id = $request->id;
+        $quantity = $request->quantity;
+
+        $cart = session()->get('cart', []);
+
+        if(isset($cart[$id])) {
+            $cart[$id]['quantity'] = $quantity;
+            session()->put('cart', $cart);
+        }
+
+        // Tính lại tổng tiền
+        $price = 0;
+
+        foreach ($cart as $item) {
+            $price += $item['price'] * $item['quantity'];
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'new_total' => $price
+        ]);
     }
 }
