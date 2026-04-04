@@ -15,11 +15,9 @@
                 <li>
                     <a href="{{ route('cart.index') }}">
                         <i class="fas fa-shopping-cart"></i> Giỏ hàng
-                        @if(session('cart') && count(session('cart')) > 0)
-                            <span class="badge" style="background: red; color: white; padding: 2px 6px; border-radius: 50%; font-size: 10px;">
-                                {{ count(session('cart')) }}
-                            </span>
-                        @endif
+                        <span class="badge cart-count" style="background: red; color: white; padding: 2px 6px; border-radius: 50%; font-size: 10px; margin-left: 5px;">
+                            {{ session('cart') ? count(session('cart')) : 0 }}
+                        </span>
                     </a>
                 </li>
             </ul>

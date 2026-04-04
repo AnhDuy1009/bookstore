@@ -41,9 +41,10 @@
         @forelse($sach_list as $sach)
             <div class="book-card">
                 <div class="book-image">
-                    {{-- Sử dụng asset() để trỏ đến thư mục public --}}
-                    <img src="{{ asset($sach->Link_Anh_Bia ?? 'assets/images/default-book.jpg') }}" 
-                         alt="{{ $sach->Ten_Sach }}">
+                    <a href="{{ route('books.show', $sach->ID) }}">
+                        <img src="{{ asset($sach->Link_Anh_Bia ?? 'assets/images/default-book.jpg') }}" 
+                            alt="{{ $sach->Ten_Sach }}">
+                    </a>
                 </div>
                 
                 <div class="book-info">
@@ -73,7 +74,7 @@
                     <div class="book-actions" style="margin-top: 15px;">
                         <form action="{{ route('cart.add', $sach->ID) }}" method="POST">
                             @csrf
-                            <button type="submit" class="btn-add-cart" style="width: 100%; padding: 8px; background: #27ae60; color: #white; border: none; border-radius: 4px; cursor: pointer;">
+                            <button type="submit" class="btn-add-cart" style="width: 100%; padding: 8px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer;">
                                 <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
                             </button>
                         </form>

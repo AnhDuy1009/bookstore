@@ -9,6 +9,7 @@
     @if(session('cart') && count(session('cart')) > 0)
         <a href="{{ route('cart.clear') }}" 
            class="btn btn-outline-danger btn-sm" 
+           style="margin-bottom: 20px; display: inline-block;"
            onclick="return confirm('Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng không?')">
            <i class="fas fa-trash-alt"></i> Xóa tất cả
         </a>
@@ -31,29 +32,28 @@
                             @php $total += $details['price'] * $details['quantity']; @endphp
                             <tr style="border-bottom: 1px solid #eee;">
                                 <td style="padding: 15px; display: flex; align-items: center; gap: 15px;">
-                                    <img src="{{ $details['image'] }}" style="width: 70px; border-radius: 8px;">
-                                    <span style="font-weight: bold;">{{ $details['title'] }}</span>
+                                    <img src="{{ $details['image'] ?? '' }}" style="width: 70px; border-radius: 8px;" alt="Bìa sách">
+                                    <span style="font-weight: bold;">{{ $details['title'] ?? 'Tên sách' }}</span>
                                 </td>
                                 <td style="padding: 15px;">{{ number_format($details['price']) }}đ</td>
-                                <<td style="padding: 15px;">
-                                <form action="{{ route('cart.update') }}" method="POST" style="display: flex; align-items: center; gap: 5px;">
-                                    @csrf
-                                    {{-- Thêm ID vào input hidden thay vì để trên URL --}}
-                                    <input type="hidden" name="id" value="{{ $id }}">
-                                    
-                                    <input type="number" name="quantity" value="{{ $details['quantity'] }}" min="1" 
-                                        style="width: 60px; padding: 5px; border: 1px solid #ddd; border-radius: 5px;">
-                                        
-                                    <button type="submit" style="background: none; border: none; color: #3498db; cursor: pointer;">
-                                        <i class="fas fa-sync-alt"></i>
-                                    </button>
-                                </form>
-                            </td>
+                                <td style="padding: 15px;">
+                                    <form action="{{ route('cart.update') }}" method="POST" style="display: flex; align-items: center; gap: 5px;">
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{ $id }}">
+        
+                                        {{-- Đã thêm sự kiện onchange tự động submit form --}}
+                                        <input type="number" name="quantity" value="{{ $details['quantity'] }}" min="1" 
+                                            style="width: 60px; padding: 5px; border: 1px solid #ddd; border-radius: 5px;"
+                                            onchange="this.form.submit()">
+            
+                                        {{-- Nút cập nhật đã được xóa bỏ để UI gọn gàng hơn --}}
+                                    </form>
+                                </td>
                                 <td style="padding: 15px; font-weight: bold; color: #e74c3c;">
                                     {{ number_format($details['price'] * $details['quantity']) }}đ
                                 </td>
                                 <td style="padding: 15px;">
-                                    <a href="{{ route('cart.remove', $id) }}" style="color: #95a5a6;" onclick="return confirm('Xóa sản phẩm này?')">
+                                    <a href="{{ route('cart.remove', $id) }}" style="color: #95a5a6;" title="Xóa" onclick="return confirm('Xóa sản phẩm này?')">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </td>
@@ -79,7 +79,7 @@
                     <span style="color: #e74c3c;">{{ number_format($total + 30000) }}đ</span>
                 </div>
                 
-                <a href="{{ route('order.checkout') }}" 
+                <a href="{{ route('order.checkout') ?? '#' }}" 
                 style="display: block; background: #27ae60; color: #fff; text-align: center; padding: 15px; border-radius: 10px; text-decoration: none; font-weight: bold; transition: 0.3s;">
                     TIẾN HÀNH ĐẶT HÀNG
                 </a>
@@ -89,7 +89,7 @@
         <div style="text-align: center; padding: 100px 0;">
             <i class="fas fa-shopping-basket" style="font-size: 80px; color: #ddd; margin-bottom: 20px;"></i>
             <p style="color: #7f8c8d; font-size: 18px;">Giỏ hàng của bạn đang trống!</p>
-            <a href="{{ route('books.index') }}" style="color: #3498db; text-decoration: none; font-weight: bold;">Tiếp tục mua sắm</a>
+            <a href="{{ route('books.index') ?? '#' }}" style="color: #3498db; text-decoration: none; font-weight: bold;">Tiếp tục mua sắm</a>
         </div>
     @endif
 </div>
