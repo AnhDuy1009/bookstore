@@ -18,10 +18,17 @@ class ProfileController extends Controller
      */
     public function index()
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
-        // $recentOrders = $user->orders()->latest()->take(5)->get();
 
-        return view('frontend.profile.index', compact('user'));
+        // Lấy 5 đơn hàng gần nhất dựa trên bảng 'don_hang' và cột 'IDNguoiDung'
+        // Lưu ý: Bạn cần định nghĩa relationship 'orders' trong Model User
+        $recentOrders = $user->orders()->latest('NgayDat')->take(5)->get();
+        $order_count = $user->orders()->count();
+        $total_spent = $user->orders()
+                        ->where('TrangThai', 'Đã giao')
+                        ->sum('TongTien');
+        return view('frontend.profile.index', compact('user', 'recentOrders', 'order_count', 'total_spent'));
     }
 
     /**
@@ -42,16 +49,44 @@ class ProfileController extends Controller
      * - Cập nhật vào DB và thông báo thành công.
      */
     public function update(Request $request)
-    {
-        $user = Auth::user();
+{
+    /** @var \App\Models\User $user */
+    $user = Auth::user();
 
-        // 1. TODO: Validate dữ liệu (Ví dụ: 'name' => 'required|string|max:255')
+    // 1. Validate dữ liệu bao gồm cả file ảnh (AnhDaiDien)
+    $request->validate([
+        'HoTen'       => 'required|string|max:255',
+        'SoDienThoai' => 'nullable|numeric|digits_between:10,11',
+        'DiaChi'      => 'nullable|string|max:500',
+        'AnhDaiDien'  => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate định dạng ảnh
+    ], [
+        'HoTen.required' => 'Họ tên không được để trống.',
+        'SoDienThoai.numeric' => 'Số điện thoại phải là chữ số.',
+        'AnhDaiDien.image' => 'File tải lên phải là hình ảnh.',
+    ]);
+
+    // Lấy dữ liệu văn bản từ request
+    $data = $request->only(['HoTen', 'SoDienThoai', 'DiaChi']);
+
+    // 2. Xử lý Logic Upload Ảnh
+    if ($request->hasFile('AnhDaiDien')) {
+        // Lưu file vào storage/app/public/avatars
+        $path = $request->file('AnhDaiDien')->store('avatars', 'public');
         
-        // 2. TODO: Cập nhật thông tin (Trừ email và password thường sẽ làm riêng)
-        // $user->update($request->only('name', 'phone', 'address'));
-
-        return redirect()->route('profile.index')->with('success', 'Cập nhật hồ sơ thành công!');
+        // Thêm đường dẫn file (ví dụ: avatars/abc.jpg) vào mảng dữ liệu cập nhật
+        $data['AnhDaiDien'] = $path;
+        
+        // (Tùy chọn) Xóa ảnh cũ nếu có để tránh đầy bộ nhớ server
+        if ($user->AnhDaiDien && \Storage::disk('public')->exists($user->AnhDaiDien)) {
+            \Storage::disk('public')->delete($user->AnhDaiDien);
+        }
     }
+
+    // 3. Thực hiện cập nhật vào bảng 'nguoi_dung'
+    $user->update($data);
+
+    return redirect()->route('profile.index')->with('success', 'Cập nhật hồ sơ thành công!'); 
+}
 
     /**
      * TODO 4: Hiển thị form đổi mật khẩu
@@ -69,10 +104,30 @@ class ProfileController extends Controller
      */
     public function updatePassword(Request $request)
     {
-        // 1. TODO: Validate (mật khẩu mới tối thiểu 8 ký tự)
-        
-        // 2. TODO: Logic kiểm tra mật khẩu cũ và lưu mật khẩu mới đã Hash
-        
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        // 1. Validate mật khẩu mới
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|min:8|confirmed', // Yêu cầu trường new_password_confirmation
+        ], [
+            'new_password.min' => 'Mật khẩu mới phải có ít nhất 8 ký tự.',
+            'new_password.confirmed' => 'Xác nhận mật khẩu mới không khớp.',
+        ]);
+
+        // 2. Kiểm tra mật khẩu cũ (cột 'MatKhau' trong DB)
+        if (!Hash::check($request->old_password, $user->MatKhau)) {
+            return redirect()->back()->withErrors(['old_password' => 'Mật khẩu cũ không chính xác.']);
+        }
+
+        // 3. Lưu mật khẩu mới đã Hash vào cột 'MatKhau'
+        $user->update([
+            'MatKhau' => Hash::make($request->new_password)
+        ]);
+
+        //return redirect()->route('profile.index')->with('success', 'Đổi mật khẩu thành công!');
+    
         return redirect()->back()->with('success', 'Đổi mật khẩu thành công!');
     }
 }

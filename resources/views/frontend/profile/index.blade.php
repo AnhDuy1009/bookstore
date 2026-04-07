@@ -6,8 +6,9 @@
         <div class="col-md-8">
             <div class="card shadow-sm border-0">
                 <div class="card-body text-center p-5">
-                    <img src="{{ $user->AnhDaiDien ?? '/images/default-avatar.png' }}" 
-                         class="rounded-circle mb-3 shadow" style="width: 120px; height: 120px; object-fit: cover;">
+                    <img src="{{ $user->AnhDaiDien ? asset('storage/' . $user->AnhDaiDien) : asset('images/default-avatar.png') }}" 
+     class="rounded-circle shadow" 
+     style="width: 120px; height: 120px; object-fit: cover;">
                     <h3 class="fw-bold">{{ $user->HoTen }}</h3>
                     <p class="text-muted">{{ $user->Email }}</p>
 

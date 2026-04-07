@@ -51,11 +51,12 @@ class AuthController extends Controller
 
     public function register(Request $request) {
     // ... validate ...
-
+    
+            $request->validate([]);
             User::create([
-                'HoTen' => $request->name,
-                'Email' => $request->email,
-                'MatKhau' =>$request->password, 
+                'HoTen' => $request->HoTen,
+                'Email' => $request->Email,
+                'MatKhau' =>$request->MatKhau, 
                 'VaiTro' => 'user',
                 'TrangThai' => 'active'
             ]);

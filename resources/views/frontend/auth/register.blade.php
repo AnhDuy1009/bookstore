@@ -19,34 +19,35 @@
                 <h2 style="font-family: 'Playfair Display', serif; color: #2c3e50; font-size: 24px; margin-bottom: 8px;">Tạo tài khoản mới</h2>
                 <p style="color: #7f8c8d; font-size: 14px;">Gia nhập cộng đồng yêu sách ngay hôm nay</p>
             </div>
+            
 
             <form action="{{ route('register.post') }}" method="POST">
                 @csrf
                 
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label style="display: block; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Họ và tên</label>
-                    <input type="text" name="name" 
+                    <input type="text" name="HoTen" 
                            style="width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 20px; outline: none;" 
                            placeholder="Nguyễn Văn A" value="{{ old('name') }}" required>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label style="display: block; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Email</label>
-                    <input type="email" name="email" 
+                    <input type="email" name="Email" 
                            style="width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 20px; outline: none;" 
                            placeholder="example@gmail.com" value="{{ old('email') }}" required>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label style="display: block; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Mật khẩu</label>
-                    <input type="password" name="password" 
+                    <input type="password" name="MatKhau" 
                            style="width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 20px; outline: none;" 
                            placeholder="••••••••" required>
                 </div>
 
                 <div class="form-group" style="margin-bottom: 25px;">
                     <label style="display: block; font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Xác nhận mật khẩu</label>
-                    <input type="password" name="password_confirmation" 
+                    <input type="password" name="MatKhau_confirmation" 
                            style="width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 20px; outline: none;" 
                            placeholder="••••••••" required>
                 </div>
