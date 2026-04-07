@@ -13,11 +13,14 @@ class User extends Authenticatable
     protected $primaryKey = 'ID';
     public $timestamps = false;
 
-    protected $fillable = ['HoTen', 'Email', 'MatKhau', 'SoDienThoai', 'DiaChi', 'VaiTro'];
+    protected $fillable = ['HoTen', 'Email', 'MatKhau', 'SoDienThoai', 'DiaChi', 'VaiTro', 'AnhDaiDien','TrangThai'];
 
     protected $hidden = ['MatKhau'];
 
-
+    public function getAuthPassword()
+    {
+        return $this->MatKhau;
+    }
 
     // Một user có nhiều đơn hàng
     public function orders() {

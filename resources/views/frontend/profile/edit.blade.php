@@ -13,34 +13,53 @@
                         @csrf
                         @method('PUT')
                         
-                        <div class="text-center mb-4">
-                            <label for="avatar_input" style="cursor: pointer;">
-                                <img src="{{ $user->AnhDaiDien ?? '/images/default-avatar.png' }}" 
-                                     class="rounded-circle shadow-sm border" id="avatar_preview"
-                                     style="width: 100px; height: 100px; object-fit: cover;">
-                                <div class="mt-2 text-primary small">Thay đổi ảnh đại diện</div>
-                            </label>
-                            <input type="file" name="avatar" id="avatar_input" class="d-none" onchange="previewImage(this)">
+                        <div class="row mb-4 align-items-center">
+                            <label class="col-sm-3 col-form-label fw-bold">Ảnh đại diện</label>
+                            <div class="col-sm-9">
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="{{ $user->AnhDaiDien ? asset('storage/' . $user->AnhDaiDien) : asset('images/default-avatar.png') }}" 
+     class="rounded-circle shadow" 
+     style="width: 120px; height: 120px; object-fit: cover;">
+                                    <div>
+                                        <input type="file" name="AnhDaiDien" class="form-control form-control-sm" onchange="previewImage(this)">
+                                        <small class="text-muted d-block mt-1">Định dạng: JPG, PNG. Tối đa 2MB.</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Họ và tên</label>
-                            <input type="text" name="fullname" class="form-control" value="{{ $user->HoTen }}">
+                        <div class="row mb-3">
+                            <label class="col-sm-3 col-form-label fw-bold">Họ và tên</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="HoTen" class="form-control @error('HoTen') is-invalid @enderror" 
+                                       value="{{ old('HoTen', $user->HoTen) }}">
+                                @error('HoTen') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Số điện thoại</label>
-                            <input type="text" name="phone" class="form-control" value="{{ $user->SoDienThoai }}">
+                        <div class="row mb-3">
+                            <label class="col-sm-3 col-form-label fw-bold">Số điện thoại</label>
+                            <div class="col-sm-9">
+                                <input type="text" name="SoDienThoai" class="form-control @error('SoDienThoai') is-invalid @enderror" 
+                                       value="{{ old('SoDienThoai', $user->SoDienThoai) }}">
+                                @error('SoDienThoai') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Địa chỉ</label>
-                            <textarea name="address" class="form-control" rows="3">{{ $user->DiaChi }}</textarea>
+                        <div class="row mb-4">
+                            <label class="col-sm-3 col-form-label fw-bold">Địa chỉ</label>
+                            <div class="col-sm-9">
+                                <textarea name="DiaChi" class="form-control @error('DiaChi') is-invalid @enderror" 
+                                          rows="3">{{ old('DiaChi', $user->DiaChi) }}</textarea>
+                                @error('DiaChi') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            </div>
                         </div>
 
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success">Lưu thay đổi</button>
-                            <a href="{{ route('profile.index') }}" class="btn btn-light">Hủy bỏ</a>
+                        <div class="row">
+                            <div class="col-sm-9 offset-sm-3">
+                                <button type="submit" class="btn btn-primary px-4">Lưu thay đổi</button>
+                                <a href="{{ route('profile.index') }}" class="btn btn-link text-decoration-none">Hủy bỏ</a>
+                            </div>
                         </div>
                     </form>
                 </div>
