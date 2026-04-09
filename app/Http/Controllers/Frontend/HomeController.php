@@ -9,17 +9,14 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    #public function index()
-    #{
-        // TODO: Lấy 8 quyển sách mới nhất (sắp xếp theo ID giảm dần)
-        // TODO: Lấy danh sách thể loại để hiển thị menu
-        // TODO: Trả về view 'frontend.home.index' kèm dữ liệu
-        #return view('frontend.home.index');
-    #}
+    public function index()
+{
+    $book_moi = Book::orderBy('ID', 'desc')->take(8)->get();
+    $book_ban_chay = Book::orderBy('LuotBan', 'desc')->take(8)->get();
+    $the_loai = Category::where('TrangThai', 'Active')->get();
 
-    # Đây là code để test giao diện
-    public function index() {
-    $sach_list = Book::where('TrangThai', 'active')->take(8)->get();
-        return view('frontend.home', compact('sach_list'));
+    return view('frontend.home.index', compact('book_moi', 'book_ban_chay', 'the_loai'));
 }
+    
+        
 }
