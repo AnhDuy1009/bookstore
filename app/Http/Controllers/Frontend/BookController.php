@@ -11,11 +11,37 @@ use Illuminate\Http\Request;
 class BookController extends Controller
 {
     public function index(Request $request)
-    {
-        $books = Book::paginate(12);
-        $categories = Category::all(); 
-        return view('frontend.books.index', compact('books', 'categories'));
+{
+    // 1. Tạo Query Builder từ Model Book
+    $query = Book::with(['tacGia', 'danhMuc'])->where('TrangThai', 'Active');
+
+    // 2. Xử lý tìm kiếm (từ khóa q)
+    if ($request->filled('q')) {
+        $keyword = $request->q;
+        $query->where('TenSach', 'LIKE', "%{$keyword}%");
     }
+
+    // 3. Xử lý lọc theo danh mục
+    if ($request->filled('category')) {
+        $query->where('IDDanhMuc', $request->category);
+    }
+
+    // 4. Xử lý lọc theo giá
+    if ($request->filled('min_price')) {
+        $query->where('GiaBan', '>=', $request->min_price);
+    }
+    if ($request->filled('max_price')) {
+        $query->where('GiaBan', '<=', $request->max_price);
+    }
+
+    // 5. Thực thi và phân trang
+    $books = $query->orderBy('ID', 'desc')->paginate(12);
+
+    // 6. Lấy danh sách thể loại cho Sidebar
+    $categories = Category::where('TrangThai', 'Active')->get();
+
+    return view('frontend.books.index', compact('books', 'categories'));
+}
 
     public function show($id)
     {
@@ -50,11 +76,35 @@ class BookController extends Controller
         return view('frontend.books.index', compact('books', 'keyword'));
     }
 
-    public function bestseller()
-    {
-        $books = Book::orderBy('LuotXem', 'desc')->take(10)->get();
-        return view('frontend.books.bestseller', compact('books'));
+    public function bestseller(Request $request)
+{
+    // 1. Lấy danh sách thể loại để hiển thị ở Sidebar (Aside)
+    $categories = \App\Models\Category::where('TrangThai', 'Active')->get();
+
+    // 2. Khởi tạo Query lọc sách có LuotXem > 10,000
+    $query = Book::with(['tacGia'])
+                 ->where('LuotXem', '>', 10000)
+                 ->where('TrangThai', 'Active');
+
+    // 3. Xử lý các bộ lọc từ Sidebar (Nếu người dùng tìm kiếm trong trang Bán chạy)
+    if ($request->filled('q')) {
+        $query->where('TenSach', 'LIKE', '%' . $request->q . '%');
     }
+    if ($request->filled('category')) {
+        $query->where('IDDanhMuc', $request->category);
+    }
+    if ($request->filled('min_price')) {
+        $query->where('GiaBan', '>=', $request->min_price);
+    }
+    if ($request->filled('max_price')) {
+        $query->where('GiaBan', '<=', $request->max_price);
+    }
+
+    // 4. Sắp xếp theo lượt xem cao nhất và phân trang
+    $books = $query->orderBy('LuotXem', 'desc')->paginate(12);
+
+    return view('frontend.books.bestseller', compact('books', 'categories'));
+}
 
     public function filterByCategory($categoryId)
     {

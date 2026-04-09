@@ -10,6 +10,8 @@ use App\Http\Controllers\Frontend\OrderController;
 use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\AuthController;
 use App\Http\Controllers\Frontend\ReviewController as FrontendReviewController;
+use App\Http\Controllers\Frontend\CategoryController;
+use App\Http\Controllers\Api\SearchApiController;
 
 // --- ADMIN CONTROLLERS ---
 use App\Http\Controllers\Admin\DashboardController;
@@ -53,12 +55,16 @@ Route::group(['prefix' => 'password', 'as' => 'password.'], function () {
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
-
+Route::get('/books/bestseller', [BookController::class, 'bestseller'])->name('books.bestseller');
+Route::get('/danh-muc/{id}', [CategoryController::class, 'show'])->name('categories.show');
 Route::get('/authors/{id}', [BookController::class, 'author'])->name('authors.show');
+Route::get('/books/{id}', [BookController::class, 'show'])->name('books.show');
+// API endpoint for search
+Route::get('/api/search', [SearchApiController::class, 'search'])->name('api.search');
 
 Route::prefix('books')->group(function () {
     Route::get('/', [BookController::class, 'index'])->name('books.index');           // Tất cả sách
-    Route::get('/category/{slug}', [BookController::class, 'category'])->name('books.category'); // Lọc theo danh mục
+    Route::get('/category/{id}', [BookController::class, 'category'])->name('books.category'); // Lọc theo danh mục
     Route::get('/{id}', [BookController::class, 'show'])->name('books.show');     // Chi tiết sách
     Route::get('/search', [BookController::class, 'search'])->name('books.search');       // Tìm kiếm sách
     Route::get('/bestseller', [BookController::class, 'bestseller'])->name('books.bestseller');

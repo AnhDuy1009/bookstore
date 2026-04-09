@@ -76,58 +76,107 @@
 
 <div class="container" style="display: flex; gap: 30px; margin-top: 30px;">
     {{-- SIDEBAR BỘ LỌC --}}
-    <aside style="width: 250px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); height: fit-content;">
-        <h3 style="margin-bottom: 20px;">Bộ lọc</h3>
-        <form action="{{ route('books.index') }}" method="GET">
-            <div style="margin-bottom: 20px;">
-                <label><strong>Danh mục</strong></label>
-                <select name="category" class="form-control" onchange="this.form.submit()">
-                    <option value="">Tất cả</option>
-                    @foreach($categories as $cat)
-                        <option value="{{ $cat->ID }}" {{ request('category') == $cat->ID ? 'selected' : '' }}>
-                            {{ $cat->TenDanhMuc }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div style="margin-bottom: 20px;">
-                <label><strong>Giá (VNĐ)</strong></label>
-                <input type="number" name="min_price" placeholder="Từ" value="{{ request('min_price') }}" class="form-control" style="margin-bottom: 5px;">
-                <input type="number" name="max_price" placeholder="Đến" value="{{ request('max_price') }}" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%;">Áp dụng</button>
-        </form>
-    </aside>
+    <aside class="filter-sidebar">
+    <div class="filter-header">
+        <h3><i class="fas fa-filter"></i> Bộ lọc</h3>
+    </div>
+    
+    <form action="{{ route('books.index') }}" method="GET" id="filterForm">
+        <div class="filter-group">
+            <label class="filter-label">Từ khóa</label>
+            <input type="text" name="q" placeholder="Tên sách..." value="{{ request('q') }}" class="form-control-custom">
+        </div>
 
+        <div class="filter-group">
+            <label class="filter-label">Danh mục</label>
+            <div class="category-vertical-list">
+                {{-- Nút "Tất cả danh mục" --}}
+                <a href="{{ route('books.index', request()->except('category')) }}" 
+                   class="category-link {{ !request('category') ? 'active' : '' }}">
+                    <i class="fas fa-angle-right"></i> Tất cả danh mục
+                </a>
+
+                {{-- Duyệt qua danh sách từ database bookstoredb --}}
+                @foreach($categories as $cat)
+                    <a href="{{ route('books.index', array_merge(request()->query(), ['category' => $cat->ID])) }}" 
+                       class="category-link {{ request('category') == $cat->ID ? 'active' : '' }}">
+                        <i class="fas fa-angle-right"></i> {{ $cat->TenDanhMuc }}
+                    </a>
+                @endforeach
+            </div>
+            
+            {{-- Input ẩn để giữ giá trị category khi nhấn nút "Áp dụng" giá --}}
+            <input type="hidden" name="category" value="{{ request('category') }}">
+        </div>
+
+        <div class="filter-group">
+            <label class="filter-label">Khoảng giá (VNĐ)</label>
+            <div class="price-inputs">
+                <input type="number" name="min_price" placeholder="Từ" value="{{ request('min_price') }}">
+                <input type="number" name="max_price" placeholder="Đến" value="{{ request('max_price') }}">
+            </div>
+        </div>
+
+        <button type="submit" class="btn-filter-apply">Áp dụng</button>
+        
+        @if(request()->anyFilled(['q', 'category', 'min_price', 'max_price']))
+            <a href="{{ route('books.index') }}" class="btn-clear">
+                <i class="fas fa-times"></i> Xóa tất cả bộ lọc
+            </a>
+        @endif
+    </form>
+</aside>
     {{-- DANH SÁCH SÁCH --}}
     <main style="flex: 1;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
-            @forelse($books as $book)
-                <div class="book-card" style="background: #fff; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: space-between;">
-                    {{-- Click vào ảnh hoặc tên đều vào trang chi tiết --}}
-                    <a href="{{ route('books.show', $book->ID) }}" style="text-decoration: none;">
-                        <img src="{{ $book->Link_Anh_Bia }}" alt="{{ $book->TenSach }}" style="width: 100%; height: 250px; object-fit: cover; border-radius: 4px;">
-                        <h4 style="margin: 10px 0; color: #2c3e50; font-size: 16px; height: 40px; overflow: hidden;">{{ $book->TenSach }}</h4>
+        <div class="category-page-wrapper">
+    <div class="book-grid-container">
+        @forelse($books as $book)
+            <div class="custom-book-card">
+                {{-- Phần ảnh sách --}}
+                <div class="image-box">
+                    @if(isset($book->LuotXem) && $book->LuotXem > 10000)
+                        <span class="hot-label">HOT</span>
+                    @endif
+                    <a href="{{ route('books.show', $book->ID) }}">
+                        <img src="{{ Str::startsWith($book->Link_image, ['http://', 'https://']) 
+            ? $book->Link_image 
+            : asset('storage/' . $book->Link_image) }}" 
+     alt="{{ $book->TenSach }};" >
                     </a>
+                </div>
+
+                {{-- Thông tin sách --}}
+                <div class="info-box">
+                    <h4 class="product-name">
+                        <a href="{{ route('books.show', $book->ID) }}">{{ $book->TenSach }}</a>
+                    </h4>
                     
-                    <p style="color: #e74c3c; font-weight: bold; margin-bottom: 10px;">{{ number_format($book->GiaBan) }}đ</p>
+                    {{-- Bổ sung tên tác giả cho giống mẫu --}}
+                    <p class="author-text">
+                        <i class="fas fa-user-edit"></i> {{ $book->tacGia->TenTacGia ?? 'Khuyết danh' }}
+                    </p>
+
+                    <p class="price-text">{{ number_format($book->GiaBan) }}đ</p>
                     
-                    {{-- SỬA LỖI NÚT THÊM GIỎ HÀNG TẠI ĐÂY --}}
+                    {{-- Form thêm giỏ hàng --}}
                     <form action="{{ route('cart.add', $book->ID) }}" method="POST">
                         @csrf
                         <input type="hidden" name="id" value="{{ $book->ID }}">
                         <input type="hidden" name="quantity" value="1">
-                        <button type="submit" class="btn btn-sm btn-outline-primary w-100">
+                        <button type="submit" class="btn-buy-now">
                             <i class="fa fa-shopping-cart"></i> Thêm vào giỏ
                         </button>
                     </form>
                 </div>
-            @empty
-                <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
-                    <p>Không tìm thấy sách nào phù hợp.</p>
-                </div>
-            @endforelse
-        </div>
+            </div>
+        @empty
+            <div class="no-results">
+                <img src="{{ asset('assets/images/no-book.png') }}" style="width: 100px; opacity: 0.5;">
+                <p>Không tìm thấy sách nào phù hợp với bộ lọc.</p>
+            </div>
+        @endforelse
+    </div>
+</div>
         
         {{-- PHÂN TRANG --}}
         <div class="pagination-container">

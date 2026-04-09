@@ -430,3 +430,291 @@ main {
     border-radius: 50%;
 }
 
+/* 1. Bố cục chính (Layout) - Cực kỳ quan trọng để đẩy sách lên cạnh danh mục */
+.main-wrapper {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+/* 2. Thanh Aside (Thanh bên trái) */
+.filter-sidebar {
+    width: 280px;
+    flex-shrink: 0; /* Không cho phép co lại */
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    height: fit-content;
+    position: sticky; /* Giúp bộ lọc đi dọc theo màn hình khi cuộn */
+    top: 20px;
+}
+
+.filter-header h3 {
+    font-size: 1.25rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 3. Từng nhóm bộ lọc */
+.filter-group {
+    margin-bottom: 25px;
+}
+
+.filter-label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #34495e;
+    font-size: 0.95rem;
+}
+
+/* 4. Định dạng ô nhập Từ khóa (Custom Input) */
+.form-control-custom {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.form-control-custom:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* 5. Danh sách danh mục nằm dọc */
+.category-vertical-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.category-link {
+    display: block;
+    padding: 10px 12px;
+    color: #555;
+    text-decoration: none !important;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.category-link:hover {
+    background-color: #f0f7ff;
+    color: #3498db;
+    padding-left: 18px; /* Hiệu ứng đẩy nhẹ khi hover */
+}
+
+.category-link.active {
+    background-color: #3498db;
+    color: #fff !important;
+    font-weight: bold;
+}
+
+.category-link i {
+    font-size: 0.7rem;
+    margin-right: 8px;
+    opacity: 0.7;
+}
+
+/* 6. Nhóm nhập giá */
+.price-inputs {
+    display: flex;
+    gap: 8px;
+}
+
+.price-inputs input {
+    width: 50%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+/* 7. Các nút bấm Thao tác */
+.btn-filter-apply {
+    width: 100%;
+    padding: 12px;
+    background: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.btn-filter-apply:hover {
+    background: #2980b9;
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+
+.btn-clear {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #e74c3c;
+    font-size: 0.85rem;
+    text-decoration: none !important;
+    font-weight: 500;
+}
+
+.btn-clear:hover {
+    color: #c0392b;
+    text-decoration: underline !important;
+}
+
+/* 8. Lưới sách bên phải (Book Content) */
+.book-content {
+    flex-grow: 1;
+}
+
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 cột trên PC */
+    gap: 20px;
+}
+
+/* 9. Responsive cho Mobile/Tablet */
+@media (max-width: 1200px) {
+    .book-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 cột trên Laptop nhỏ */
+    }
+}
+
+@media (max-width: 992px) {
+    .main-wrapper {
+        flex-direction: column; /* Chuyển thành 1 hàng dọc trên Mobile */
+    }
+    .filter-sidebar {
+        width: 100%;
+        position: static;
+    }
+    .book-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 cột trên Mobile */
+    }
+}
+
+    /* Container chia cột cho phần Danh mục */
+    .category-page-wrapper .book-grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 25px;
+    }
+
+    /* Thẻ sách kiểu mới */
+    .category-page-wrapper .custom-book-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Đổ bóng sâu */
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #f1f1f1;
+        position: relative;
+    }
+
+    .category-page-wrapper .custom-book-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    /* Ảnh sách */
+    .category-page-wrapper .image-box {
+        position: relative;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .category-page-wrapper .image-box img {
+        width: 100%;
+        height: 230px;
+        object-fit: contain; /* Giữ nguyên tỉ lệ ảnh */
+        border-radius: 8px;
+    }
+
+    /* Nhãn HOT */
+    .category-page-wrapper .hot-label {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: #e74c3c;
+        color: white;
+        padding: 2px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+        z-index: 10;
+    }
+
+    /* Tên sách */
+    .category-page-wrapper .product-name {
+        font-size: 16px;
+        font-weight: bold;
+        height: 44px; /* Ép 2 dòng */
+        overflow: hidden;
+        margin-bottom: 8px;
+        line-height: 1.4;
+    }
+
+    .category-page-wrapper .product-name a {
+        color: #2c3e50;
+        text-decoration: none;
+    }
+
+    /* Tên tác giả */
+    .category-page-wrapper .author-text {
+        font-size: 13px;
+        color: #7f8c8d;
+        margin-bottom: 10px;
+    }
+
+    /* Giá tiền cam đậm */
+    .category-page-wrapper .price-text {
+        color: #e67e22;
+        font-size: 19px;
+        font-weight: 800;
+        margin-bottom: 15px;
+    }
+
+    /* Nút thêm giỏ hàng xanh lá */
+    .category-page-wrapper .btn-buy-now {
+        width: 100%;
+        padding: 10px;
+        background-color: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .category-page-wrapper .btn-buy-now:hover {
+        background-color: #219150;
+    }
+
+    /* CSS khi không có kết quả */
+    .category-page-wrapper .no-results {
+        grid-column: 1/-1;
+        text-align: center;
+        padding: 80px 20px;
+        background: #f9f9f9;
+        border-radius: 15px;
+        color: #95a5a6;
+    }
+
