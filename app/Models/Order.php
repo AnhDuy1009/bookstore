@@ -11,17 +11,18 @@ class Order extends Model
     protected $table = 'don_hang';
     protected $primaryKey = 'ID';
     
-    // Tắt timestamps vì DB cũ có thể chỉ có cột NgayDat thay vì created_at/updated_at
+  
     public $timestamps = false; 
 
     protected $fillable = [
+        'MaDonHang',
         'IDNguoiDung', 
         'NgayDat', 
         'TongTien', 
         'TrangThai', 
         'DiaChiGiaoHang', 
         'SoDienThoai',
-        'PhuongThucThanhToan' // Nên thêm cột này nếu bạn có dùng Momo/VNPAY/COD
+        'PhuongThucThanhToan' 
     ];
 
     protected $casts = [
@@ -43,6 +44,12 @@ class Order extends Model
     public function items(): HasMany
     {
         // Giả sử model chi tiết là OrderItem
+        return $this->hasMany(OrderItem::class, 'IDDonHang', 'ID');
+    }
+    // Thêm vào file Order.php
+    public function details()
+    {
+    // Liên kết 1 đơn hàng có nhiều chi tiết đơn hàng
         return $this->hasMany(OrderItem::class, 'IDDonHang', 'ID');
     }
 }

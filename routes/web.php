@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\BookController; 
 use App\Http\Controllers\Frontend\CartController;
-use App\Http\Controllers\Frontend\OrderController; 
+use App\Http\Controllers\Frontend\OrderController;
 use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\AuthController;
 use App\Http\Controllers\Frontend\ReviewController as FrontendReviewController;
@@ -20,9 +20,8 @@ use App\Http\Controllers\Admin\BookController as AdminBookController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ReviewController;
-use App\Http\Controllers\Admin\StatisticsController;
+use App\Http\Controllers\Admin\StatisticController;
 use App\Http\Controllers\Admin\AdminController;
-
 /*
 |--------------------------------------------------------------------------
 | 1. XÁC THỰC (AUTHENTICATION)
@@ -126,7 +125,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // 2. Các Resource (Tự động tạo admin.categories.index, admin.books.index, admin.users.index)
     Route::resource('categories', AdminCategoryController::class);
     Route::resource('books', AdminBookController::class);
-    Route::resource('users', UserController::class);
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::get('users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('users', [UserController::class, 'store'])->name('users.store');
+    Route::get('users/{id}', [UserController::class, 'show'])->name('users.show');
+    Route::get('users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('users/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
     // 3. Quản lý Đơn hàng (Chỉ cần .name('orders.') vì đã có 'admin.' ở ngoài)
     Route::prefix('orders')->name('orders.')->group(function () {
@@ -145,7 +150,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // 5. Thống kê
     Route::prefix('statistics')->name('statistics.')->group(function () {
-        Route::get('/', [StatisticsController::class, 'index'])->name('index'); // -> admin.statistics.index
-        Route::get('/export', [StatisticsController::class, 'export'])->name('export');
+        Route::get('/', [StatisticController::class, 'index'])->name('index'); // -> admin.statistics.index
+        Route::get('/export', [StatisticController::class, 'export'])->name('export');
     });
+    
 });

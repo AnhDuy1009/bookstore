@@ -1,43 +1,44 @@
-<div class="admin-sidebar shadow">
-    <div class="sidebar-brand p-4 text-center">
-        <h3 style="color: #ff9f43; font-weight: bold; letter-spacing: 1px;">HIỆN SÁCH</h3>
-        <p class="text-muted small">Hệ thống Quản trị</p>
+<div class="admin-sidebar d-flex flex-column h-100">
+    {{-- LOGO --}}
+    <div class="text-center py-4 border-bottom mb-3">
+        <h2 class="fw-bold mb-1" style="color: #0077ff; letter-spacing: 1px;">HIÊN SÁCH</h2>
+        <small class="text-muted">Hệ thống Quản trị</small>
     </div>
 
-    <ul class="nav flex-column mt-2">
+    {{-- MENU CHÍNH --}}
+    <ul class="nav flex-column mb-auto px-2">
         <li class="nav-item">
-            <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                <i class="fas fa-chart-pie me-2"></i> Bảng điều khiển
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="{{ route('admin.books.index') }}" 
-            class="nav-link {{ request()->routeIs('admin.books.*') ? 'active' : '' }}">
-                <i class="fas fa-book me-2"></i> 
-                <span style="color: #ff9f43; font-weight: 500;">Quản lý Sách</span>
+           
+            <a href="{{ url('admin') }}" class="nav-link d-flex align-items-center gap-3 {{ request()->is('admin') ? 'active' : '' }}">
+                <i class="fas fa-chart-pie fa-fw"></i> Bảng điều khiển
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ route('admin.categories.index') }}" class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-                <i class="fas fa-tags me-2"></i> Danh mục sách
+            <a href="{{ url('admin/books') }}" class="nav-link d-flex align-items-center gap-3 {{ request()->is('admin/books*') ? 'active' : '' }}">
+                <i class="fas fa-book fa-fw"></i> Quản lý Sách
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ route('admin.orders.index') }}" class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
-                <i class="fas fa-shopping-cart me-2"></i> Đơn hàng
+            <a href="{{ url('admin/categories') }}" class="nav-link d-flex align-items-center gap-3 {{ request()->is('admin/categories*') ? 'active' : '' }}">
+                <i class="fas fa-tags fa-fw"></i> Danh mục sách
             </a>
         </li>
-       <li class="nav-item">
-            <a href="{{ route('admin.users.index') }}" 
-            class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                <i class="fas fa-user-shield me-2"></i> 
-                <span style="color: #ff9f43; font-weight: 500;">Quản lý Người dùng</span>
+        <li class="nav-item">
+            <a href="{{ url('admin/orders') }}" class="nav-link d-flex align-items-center gap-3 {{ request()->is('admin/orders*') ? 'active' : '' }}">
+                <i class="fas fa-shopping-cart fa-fw"></i> Đơn hàng
             </a>
         </li>
-        <li class="nav-item mt-4 border-top pt-3">
-            <a href="{{ route('home') }}" class="nav-link text-info" target="_blank">
-                <i class="fas fa-external-link-alt me-2"></i> Xem trang chủ
+        <li class="nav-item">
+            <a href="{{ url('admin/users') }}" class="nav-link d-flex align-items-center gap-3 {{ request()->is('admin/users*') ? 'active' : '' }}">
+                <i class="fas fa-user-shield fa-fw"></i> Quản lý Người dùng
             </a>
         </li>
     </ul>
+
+    {{-- NÚT XEM TRANG CHỦ --}}
+    <div class="p-3 mt-auto border-top">
+        <a href="{{ url('/') }}" class="nav-link d-flex align-items-center gap-3 text-info" target="_blank">
+            <i class="fas fa-external-link-alt fa-fw"></i> Xem trang chủ
+        </a>
+    </div>
 </div>

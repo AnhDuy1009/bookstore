@@ -10,35 +10,82 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        // TODO: Lấy toàn bộ danh sách thể loại (Category::all())
+       
+        $categories = Category::orderBy('ID', 'desc')->paginate(10);
+        
         return view('admin.categories.index', compact('categories'));
     }
 
     public function store(Request $request)
     {
-        // TODO: Validate 'TenTheLoai' không được trùng trong bảng 'the_loai'
-        // TODO: Category::create($request->only('TenTheLoai'));
-        // TODO: Trả về back() kèm thông báo thành công
-        // Trả về back() kèm thông báo thành công
-        return redirect()->route('categories.index')->with('success', 'Thêm danh mục mới thành công!');
+    
+        $category = new Category();
+        
+      
+        if ($request->has('TenDanhMuc')) {
+            $category->TenDanhMuc = $request->input('TenDanhMuc');
+        } elseif ($request->has('TenTheLoai')) {
+            $category->TenTheLoai = $request->input('TenTheLoai');
+        }
+
+        $category->save();
+
+        
+        return redirect()->route('admin.categories.index')->with('success', 'Thêm danh mục mới thành công!');
     }
 
     public function update(Request $request, $id)
     {
-        // TODO: Tìm Category theo ID và cập nhật TenTheLoai mới
-        return redirect()->route('categories.index')->with('success', 'Cập nhật danh mục thành công!');
+      
+        $category = Category::findOrFail($id);
+        
+        // Cập nhật tên danh mục
+        if ($request->has('TenDanhMuc')) {
+            $category->TenDanhMuc = $request->input('TenDanhMuc');
+        } elseif ($request->has('TenTheLoai')) {
+            $category->TenTheLoai = $request->input('TenTheLoai');
+        }
+
+        // Nếu có cập nhật trạng thái
+        if ($request->has('TrangThai')) {
+            $category->TrangThai = $request->input('TrangThai');
+        }
+
+        $category->save();
+
+       
+        return redirect()->route('admin.categories.index')->with('success', 'Cập nhật danh mục thành công!');
     }
     
 
     public function destroy($id)
     {
-        // TODO: Kiểm tra ràng buộc: Nếu thể loại này đang có sách thì KHÔNG ĐƯỢC XÓA
-        // TODO: Trả về thông báo lỗi nếu còn sách, ngược lại cho phép xóa
+        
+        $category = Category::findOrFail($id);
+
+        // Kiểm tra ràng buộc: Nếu thể loại này đang có sách thì KHÔNG ĐƯỢC XÓA
         if ($category->books()->count() > 0) {
             // Trả về thông báo lỗi nếu còn sách
-            return redirect()->route('categories.index')->with('error', 'Không thể xóa vì danh mục này đang chứa sách!');
+            return redirect()->route('admin.categories.index')->with('error', 'Không thể xóa vì danh mục này đang chứa sách!');
         }
+        
         $category->delete();
-        return redirect()->route('categories.index')->with('success', 'Đã xóa danh mục thành công!');
+        
+       
+        return redirect()->route('admin.categories.index')->with('success', 'Đã xóa danh mục thành công!');
+    }
+    // Hàm hiển thị form Thêm mới
+    public function create()
+    {
+        return view('admin.categories.edit');
+    }
+
+    // Hàm hiển thị form Chỉnh sửa
+    public function edit($id)
+    {
+        // Tìm danh mục theo ID để đổ dữ liệu cũ ra form
+        $category = \App\Models\Category::findOrFail($id);
+        
+        return view('admin.categories.edit', compact('category'));
     }
 }

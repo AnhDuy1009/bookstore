@@ -13,7 +13,7 @@ class User extends Authenticatable
     protected $primaryKey = 'ID';
     public $timestamps = false;
 
-    protected $fillable = ['HoTen', 'Email', 'MatKhau', 'SoDienThoai', 'DiaChi', 'VaiTro', 'AnhDaiDien','TrangThai'];
+    protected $fillable = ['HoTen', 'Email', 'MatKhau', 'SoDienThoai', 'DiaChi', 'VaiTro', 'AnhDaiDien','TrangThai', 'Role', 'MaVaiTro'];
 
     protected $hidden = ['MatKhau'];
 

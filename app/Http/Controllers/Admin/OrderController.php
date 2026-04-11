@@ -10,24 +10,39 @@ class OrderController extends Controller
 {
     public function index()
     {
-        // TODO: Lấy danh sách đơn hàng mới nhất (OrderBy NgayDat Desc)
-        return view('admin.orders.index');
+        $orders = Order::with('user')->orderBy('ID', 'desc')->paginate(10);
+        
+        return view('admin.orders.index', compact('orders'));
     }
 
     public function show($id)
     {
-        // TODO: Lấy chi tiết đơn hàng (OrderItem) kèm thông tin Sách
-        return view('admin.orders.show');
+        $order = Order::with(['user', 'details.book'])->findOrFail($id);
+        
+        return view('admin.orders.show', compact('order'));
     }
 
     public function updateStatus(Request $request, $id)
-    {
-        // TODO: Cập nhật cột 'TrangThai' (Ví dụ: Đang giao, Đã giao, Đã hủy)
-    }
+{
+    
+    $request->validate([
+        'TrangThai' => 'required'
+    ]);
+
+    
+    \Illuminate\Support\Facades\DB::table('don_hang') 
+        ->where('ID', $id)
+        ->update([
+            'TrangThai' => $request->TrangThai
+        ]);
+
+  
+    return redirect()->back()->with('success', 'Cập nhật trạng thái thành công!');
+}
 
     public function print($id)
     {
-        // Lấy đơn hàng kèm chi tiết và thông tin sách để in
+      
         $order = Order::with('details.book')->findOrFail($id);
         return view('admin.orders.print', compact('order'));
     }

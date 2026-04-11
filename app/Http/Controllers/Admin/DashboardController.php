@@ -12,39 +12,56 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // TODO: Đếm tổng số sách (Book::count())
-        // TODO: Đếm tổng số đơn hàng mới (TrangThai = 'ChoDuyet')
-        // TODO: Tính tổng doanh thu từ bảng don_hang
-        // TODO: Lấy 5 đơn hàng mới nhất để hiển thị bảng nhanh
-        
-
-
-    // Lấy doanh thu 7 ngày gần nhất (code đã fix không đụng vào nha)
-    // Gán giá trị giả để test giao diện (Fake Data)
-    $currentMonthRevenue = 5000000; // 5 triệu
-    $newOrdersCount = 12;
-    $newUsersCount = 5;
-    $totalStock = 150;
-    
-    // Tạo 1 mảng rỗng hoặc giả cho danh sách đơn hàng
-    $recentOrders = [];
-    $days = [];
-    $revenues = [];
-    for ($i = 6; $i >= 0; $i--) {
-        $date = date('Y-m-d', strtotime("-$i days"));
-        $days[] = date('d/m', strtotime($date));
-        
-        $dailyRevenue = DB::table('don_hang')
-            ->whereDate('NgayDat', $date)
-            ->whereIn('TrangThai', ['PAID', 'DONE'])
-            ->sum('TongTien');
+        // --- 1. XỬ LÝ BIỂU ĐỒ DOANH THU 7 NGÀY GẦN NHẤT (Giữ nguyên logic fix) ---
+        $days = [];
+        $revenues = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = date('Y-m-d', strtotime("-$i days"));
+            $days[] = date('d/m', strtotime($date));
             
-        $revenues[] = $dailyRevenue;
-    }
+            $dailyRevenue = DB::table('don_hang')
+                ->whereDate('NgayDat', $date)
+                ->whereIn('TrangThai', ['PAID', 'DONE', 'Đã giao', 'Hoàn thành'])
+                ->sum('TongTien');
+                
+            $revenues[] = $dailyRevenue;
+        }
 
-    return view('admin.dashboard.index', compact(
-        'currentMonthRevenue', 'newOrdersCount', 'newUsersCount', 
-        'totalStock', 'recentOrders', 'days', 'revenues'
-    ));
+        // --- 2. XỬ LÝ 4 KHỐI THỐNG KÊ (Dữ liệu thật từ Database) ---
+        
+        // Tính tổng doanh thu từ trước đến nay (Tổng doanh thu thật)
+        $currentMonthRevenue = DB::table('don_hang')
+            ->whereIn('TrangThai', ['PAID', 'DONE', 'Đã giao', 'Hoàn thành'])
+            ->sum('TongTien');
+
+        // Đếm tổng số đơn hàng mới với trạng thái 'ChoDuyet'
+        $newOrdersCount = DB::table('don_hang')
+        ->where('TrangThai', 'Đang xử lý') 
+        ->count();
+
+        // Đếm tổng số người dùng có trong hệ thống
+        $newUsersCount = User::count();
+
+        // Đếm tổng số lượng đầu sách (Book::count()) - Đúng yêu cầu của bạn
+        $totalStock = Book::count();
+
+        // --- 3. XỬ LÝ BẢNG ĐƠN HÀNG GẦN ĐÂY ---
+        
+        // Lấy 5 đơn hàng mới nhất để hiển thị bảng nhanh
+        $recentOrders = Order::with('user')
+            ->latest('NgayDat')
+            ->take(5)
+            ->get();
+
+        // --- 4. TRẢ DỮ LIỆU VỀ VIEW ---
+        return view('admin.dashboard.index', compact(
+            'currentMonthRevenue', 
+            'newOrdersCount', 
+            'newUsersCount', 
+            'totalStock', 
+            'recentOrders', 
+            'days', 
+            'revenues'
+        ));
     }
 }
