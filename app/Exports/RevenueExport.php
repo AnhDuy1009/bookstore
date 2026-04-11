@@ -6,8 +6,11 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class RevenueExport implements FromCollection, WithHeadings, WithMapping
+class RevenueExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize
 {
     protected $tu, $den;
 
@@ -33,6 +36,13 @@ class RevenueExport implements FromCollection, WithHeadings, WithMapping
             date('d/m/Y', strtotime($order->NgayDat)),
             $order->PhuongThucThanhToan,
             number_format($order->TongTien) . " đ"
+        ];
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        return [
+            1    => ['font' => ['bold' => true, 'size' => 12]],
         ];
     }
 }

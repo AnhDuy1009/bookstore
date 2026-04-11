@@ -4,16 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\User;
+use App\Models\Author; // Đã thêm Model Author
+use Illuminate\Support\Facades\Storage; // Hỗ trợ xóa ảnh cũ
 
 class AuthorController extends Controller
 {
     public function index()
     {
-        // TODO: Lấy danh sách tác giả phân trang 10 mục/trang
+        // Lấy danh sách tác giả phân trang 10 mục/trang, sắp xếp mới nhất lên đầu
         $authors = Author::orderBy('ID', 'DESC')->paginate(10);
 
-        // TODO: Truyền biến $authors ra view 'admin.authors.index'
+        // Truyền biến $authors ra view
         return view('admin.authors.index', compact('authors'));
     }
 
@@ -24,17 +25,32 @@ class AuthorController extends Controller
 
     public function store(Request $request)
     {
-        // TODO: Validate 'TenTacGia' là bắt buộc
-        // TODO: Xử lý lưu 'HinhAnh' (Có thể là URL hoặc Upload file qua UploadService)
-        // TODO: Author::create($request->all());
+        // 1. Validate dữ liệu
+        $request->validate([
+            'TenTacGia' => 'required|max:255',
+            'HinhAnh' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ], [
+            'TenTacGia.required' => 'Bạn vui lòng nhập tên tác giả.'
+        ]);
 
-        // TODO: Redirect về index với thông báo thành công
-        return redirect()->route('authors.index')->with('success', 'Thêm tác giả mới thành công!');
+        $data = $request->all();
+
+        // 2. Xử lý lưu HinhAnh (Upload file)
+        if ($request->hasFile('HinhAnh')) {
+            $path = $request->file('HinhAnh')->store('authors', 'public');
+            $data['HinhAnh'] = $path;
+        }
+
+        // 3. Tạo mới tác giả
+        Author::create($data);
+
+        // Redirect về index với route có admin.
+        return redirect()->route('admin.authors.index')->with('success', 'Thêm tác giả mới thành công!');
     }
 
     public function edit($id)
     {
-        // TODO: Tìm Author theo $id (findOrFail)
+        // Tìm Author theo $id
         $author = Author::findOrFail($id);
 
         return view('admin.authors.edit', compact('author'));
@@ -42,27 +58,47 @@ class AuthorController extends Controller
 
     public function update(Request $request, $id)
     {
-        // TODO: Cập nhật thông tin tác giả
-        // TODO: Nếu có ảnh mới, hãy xóa ảnh cũ trong storage trước khi lưu ảnh mới
+        $author = Author::findOrFail($id);
 
-        return redirect()->route('authors.index')->with('success', 'Cập nhật thông tin tác giả thành công!');
+        // 1. Validate
+        $request->validate([
+            'TenTacGia' => 'required|max:255',
+            'HinhAnh' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        $data = $request->all();
+
+        // 2. Nếu có ảnh mới, hãy xóa ảnh cũ trong storage trước khi lưu ảnh mới
+        if ($request->hasFile('HinhAnh')) {
+            if ($author->HinhAnh && Storage::disk('public')->exists($author->HinhAnh)) {
+                Storage::disk('public')->delete($author->HinhAnh);
+            }
+            $path = $request->file('HinhAnh')->store('authors', 'public');
+            $data['HinhAnh'] = $path;
+        }
+
+        $author->update($data);
+
+        return redirect()->route('admin.authors.index')->with('success', 'Cập nhật thông tin tác giả thành công!');
     }
 
     public function destroy($id)
     {
         $author = Author::findOrFail($id);
 
-        // TODO: Kiểm tra $author->books()->count()
-        // TODO: Nếu > 0 thì không cho xóa (vì tác giả đang có sách), trả về thông báo lỗi
-        
-        // Giả sử logic kiểm tra:
-        // if($author->books()->count() > 0) {
-        //    return back()->with('error', 'Không thể xóa tác giả này vì đang có sách trong hệ thống!');
-        // }
+        // 3. Kiểm tra ràng buộc: Nếu tác giả đang có sách thì KHÔNG ĐƯỢC XÓA
 
-        // TODO: Nếu = 0 thì tiến hành xóa và redirect về index
+        if($author->books()->count() > 0) {
+            return back()->with('error', 'Không thể xóa tác giả này vì đang có sách trong hệ thống!');
+        }
+
+        // Xóa ảnh trước khi xóa bản ghi
+        if ($author->HinhAnh && Storage::disk('public')->exists($author->HinhAnh)) {
+            Storage::disk('public')->delete($author->HinhAnh);
+        }
+
         $author->delete();
 
-        return redirect()->route('authors.index')->with('success', 'Đã xóa tác giả thành công!');
+        return redirect()->route('admin.authors.index')->with('success', 'Đã xóa tác giả thành công!');
     }
 }

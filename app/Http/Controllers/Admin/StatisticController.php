@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Exports\RevenueExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-class StatisticsController extends Controller
+class StatisticController extends Controller
 {
     public function index(Request $request)
     {

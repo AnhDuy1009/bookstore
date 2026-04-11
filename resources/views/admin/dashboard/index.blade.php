@@ -65,23 +65,56 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-12">
             <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-transparent border-0 pt-3">
-                    <h5 class="fw-bold">Biểu đồ doanh thu 7 ngày</h5>
-                </div>
-                <div class="card-body">
-                    <canvas id="revenueChart" height="250"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-transparent border-0 pt-3">
-                    <h5 class="fw-bold">Đơn hàng gần đây</h5>
+                <div class="card-header bg-transparent border-0 pt-3 pb-2">
+                    <h5 class="fw-bold"><i class="fas fa-clipboard-list text-primary me-2"></i> Đơn hàng gần đây</h5>
                 </div>
                 <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">Mã ĐH</th>
+                                    <th>Khách hàng</th>
+                                    <th>Ngày đặt</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($recentOrders as $order)
+                                <tr>
+                                    <td class="ps-4 fw-bold text-muted">#{{ $order->ID }}</td>
+                                    
+                                    <td class="fw-bold">{{ $order->HoTen ?? ($order->user->HoTen ?? 'Khách hàng') }}</td>
+                                    
+                                    <td>{{ date('d/m/Y H:i', strtotime($order->NgayDat)) }}</td>
+                                    
+                                    <td class="text-danger fw-bold">{{ number_format($order->TongTien) }}đ</td>
+                                    
+                                    <td>
+                                        @if($order->TrangThai == 'Hoàn thành' || $order->TrangThai == 'Đã giao')
+                                            <span class="badge bg-success">{{ $order->TrangThai }}</span>
+                                        @elseif($order->TrangThai == 'Đã hủy')
+                                            <span class="badge bg-danger">{{ $order->TrangThai }}</span>
+                                        @else
+                                            <span class="badge bg-warning text-dark">{{ $order->TrangThai }}</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">
+                                        <i class="fas fa-box-open fa-2x mb-2"></i>
+                                        <p class="mb-0">Chưa có đơn hàng nào</p>
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
                     </div>
+                </div>
             </div>
         </div>
     </div>

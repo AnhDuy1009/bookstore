@@ -3,96 +3,96 @@
 @section('title', 'Chi tiết đơn hàng #' . $order->ID)
 
 @section('content')
-<div class="admin-container">
-    <div class="admin-header">
-        <h1>CHI TIẾT ĐƠN HÀNG</h1>
-        <p class="welcome">Thông tin chi tiết đơn #{{ $order->ID }}</p>
+<div class="card border-0 shadow-sm p-4">
+  
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+        <div>
+            <h4 class="fw-bold mb-1 text-primary"><i class="fas fa-file-invoice"></i> CHI TIẾT ĐƠN HÀNG #{{ $order->ID }}</h4>
+            <p class="text-muted small mb-0">Ngày tạo: {{ date('d/m/Y H:i', strtotime($order->NgayTao ?? $order->NgayDat ?? now())) }}</p>
+        </div>
+        <div class="text-end">
+            <a class="btn btn-outline-secondary btn-sm me-2" href="{{ route('admin.orders.index') }}">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+            <a class="btn btn-dark btn-sm" href="{{ route('admin.orders.print', $order->ID) }}" target="_blank">
+                <i class="fas fa-print"></i> In hóa đơn
+            </a>
+        </div>
     </div>
 
-    <div class="admin-content">
-        <div class="toolbar">
-            <div></div>
-            <div class="action-buttons">
-                <a class="btn btn-outline" href="{{ route('orders.index') }}">← Quay lại</a>
-                <a class="btn btn-outline" href="{{ route('orders.print', $order->ID) }}" target="_blank">🖨 In hóa đơn</a>
+   
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-1"></i> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+   
+    <div class="row mb-4 g-3">
+        <div class="col-md-4">
+            <div class="p-3 bg-light rounded border h-100">
+                <div class="text-muted small fw-bold mb-2"><i class="fas fa-user text-primary"></i> KHÁCH HÀNG</div>
+                <div class="fw-bold text-dark fs-5">{{ $order->HoTen ?? ($order->user->HoTen ?? 'Khách lẻ') }}</div>
+                <div class="text-muted small mt-1">Mã KH: #{{ $order->IDNguoiDung ?? 'Khách vãng lai' }}</div>
             </div>
         </div>
-
-        <div class="card card-pad" style="display: flex; gap: 25px; flex-wrap: wrap; margin-bottom: 20px;">
-            <div style="flex: 1; min-width: 200px;">
-                <div style="font-weight: 800; color: #718096; font-size: 12px; margin-bottom: 5px;">KHÁCH HÀNG</div>
-                <div style="font-weight: 700; color: #2d3748;">ID Người dùng: #{{ $order->IDNguoiDung }}</div>
-                <div style="font-size: 14px; color: #4a5568;">Ngày đặt: {{ $order->NgayTao }}</div>
+        
+        <div class="col-md-4">
+            <div class="p-3 bg-light rounded border h-100">
+                <div class="text-muted small fw-bold mb-2"><i class="fas fa-money-bill-wave text-success"></i> TỔNG THANH TOÁN</div>
+                <div class="fw-bold text-danger fs-4">{{ number_format($order->TongTien, 0, ',', '.') }} đ</div>
+                <div class="text-muted small mt-1">Phương thức: Mặc định</div>
             </div>
-            <div style="flex: 1; min-width: 200px;">
-                <div style="font-weight: 800; color: #718096; font-size: 12px; margin-bottom: 5px;">THANH TOÁN</div>
-                <div style="font-size: 1.5rem; font-weight: 800; color: #667eea;">
-                    {{ number_format($order->TongTien, 0, ',', '.') }} đ
+        </div>
+        
+        <div class="col-md-4">
+            <div class="p-3 bg-light rounded border h-100">
+                <div class="text-muted small fw-bold mb-2"><i class="fas fa-info-circle text-info"></i> TRẠNG THÁI HIỆN TẠI</div>
+                <div class="mt-2">
+                    @php
+                        $st = $order->TrangThai;
+                        $color = 'secondary';
+                        if(in_array(strtolower($st), ['paid','done']) || $st == 'Hoàn thành' || $st == 'Đã giao') $color = 'success';
+                        elseif(in_array(strtolower($st), ['cancel','failed']) || $st == 'Đã hủy') $color = 'danger';
+                        elseif($st == 'Đang xử lý' || strtolower($st) == 'pending' || strtolower($st) == 'new') $color = 'warning text-dark';
+                        elseif($st == 'Đang giao' || strtolower($st) == 'shipping') $color = 'info text-dark';
+                    @endphp
+                    <span class="badge bg-{{ $color }} fs-6 px-3 py-2">{{ $order->TrangThai }}</span>
                 </div>
             </div>
-            <div style="flex: 1; min-width: 200px;">
-                <div style="font-weight: 800; color: #718096; font-size: 12px; margin-bottom: 5px;">TRẠNG THÁI</div>
-                <span class="badge badge-gray" style="font-size: 14px; padding: 6px 15px;">{{ $order->TrangThai }}</span>
-            </div>
         </div>
+    </div>
 
-        <div class="form-card" style="margin-bottom: 25px;">
-            <div style="font-weight: 800; margin-bottom: 15px; color: #2d3748;">Cập nhật trạng thái đơn hàng</div>
-            <form action="{{ route('orders.updateStatus', $order->ID) }}" method="POST">
+  
+    <div class="card border border-warning mb-5 shadow-sm">
+        <div class="card-header bg-warning bg-opacity-10 fw-bold text-dark py-3">
+            <i class="fas fa-edit text-warning"></i> CẬP NHẬT TRẠNG THÁI ĐƠN HÀNG
+        </div>
+        <div class="card-body">
+          
+            <form action="{{ route('admin.orders.updateStatus', $order->ID) }}" method="POST" class="row align-items-end g-3">
                 @csrf
                 @method('PATCH')
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Chọn trạng thái mới</label>
-                        <select name="status" required>
-                            <option value="NEW" {{ $order->TrangThai == 'NEW' ? 'selected' : '' }}>Mới (NEW)</option>
-                            <option value="PAID" {{ $order->TrangThai == 'PAID' ? 'selected' : '' }}>Đã thanh toán (PAID)</option>
-                            <option value="SHIPPING" {{ $order->TrangThai == 'SHIPPING' ? 'selected' : '' }}>Đang giao (SHIPPING)</option>
-                            <option value="DONE" {{ $order->TrangThai == 'DONE' ? 'selected' : '' }}>Hoàn thành (DONE)</option>
-                            <option value="CANCEL" {{ $order->TrangThai == 'CANCEL' ? 'selected' : '' }}>Hủy đơn (CANCEL)</option>
+                
+                <div class="col-md-8 col-lg-6">
+                    <label class="form-label text-muted small fw-bold">Chọn trạng thái mới:</label>
+                    <div class="d-flex gap-2">
+                        <select name="TrangThai" class="form-select border-warning">
+                            <option value="Đang xử lý" {{ $order->TrangThai == 'Đang xử lý' ? 'selected' : '' }}>Đang xử lý</option>
+                            <option value="Đang giao" {{ $order->TrangThai == 'Đang giao' ? 'selected' : '' }}>Đang giao</option>
+                            <option value="Đã giao" {{ $order->TrangThai == 'Đã giao' ? 'selected' : '' }}>Đã giao (Hoàn thành)</option>
+                            <option value="Đã hủy" {{ $order->TrangThai == 'Đã hủy' ? 'selected' : '' }}>Đã hủy</option>
                         </select>
-                    </div>
-                    <div class="form-actions" style="margin-top: 0; align-self: flex-end;">
-                        <button type="submit" class="btn btn-primary">Cập nhật đơn hàng</button>
+                        <button type="submit" class="btn btn-warning px-4 fw-bold text-dark text-nowrap">
+                            <i class="fas fa-save me-1"></i> Lưu thay đổi
+                        </button>
                     </div>
                 </div>
             </form>
         </div>
-
-        <div class="table-wrap">
-            <div style="padding: 15px 20px; font-weight: 800; background: #f8f9fa; border-bottom: 1px solid #eee;">
-                DANH SÁCH SẢN PHẨM
-            </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Tên Sách</th>
-                        <th style="width: 120px;">Số lượng</th>
-                        <th style="width: 160px;">Đơn giá</th>
-                        <th style="width: 160px;">Thành tiền</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($order->details as $item)
-                        <tr>
-                            <td>
-                                <div style="font-weight: 700;">{{ $item->book->TenSach ?? 'Sách đã xóa' }}</div>
-                                <small class="muted">ID Sách: #{{ $item->IDSach }}</small>
-                            </td>
-                            <td>{{ $item->SoLuong }}</td>
-                            <td>{{ number_format($item->DonGia, 0, ',', '.') }} đ</td>
-                            <td style="font-weight: 700;">
-                                {{ number_format($item->SoLuong * $item->DonGia, 0, ',', '.') }} đ
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-
-        <div class="footer">
-            Hiên Sách Admin System &copy; {{ date('Y') }}
-        </div>
     </div>
+    
+
 </div>
 @endsection

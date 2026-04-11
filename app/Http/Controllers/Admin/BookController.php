@@ -12,14 +12,18 @@ class BookController extends Controller
 {
     public function index()
     {
-        // TODO: Lấy danh sách sách kèm thông tin Author và Category (Eager Loading)
-        // TODO: Phân trang 10-15 dòng/trang
-        return view('admin.books.index',compact('books'));
+        // TODO: Lấy danh sách sách kèm thông tin Author và Category
+       $books = \App\Models\Book::orderBy('ID', 'desc')->paginate(10);
+
+        // Truyền biến $books sang view admin.books.index
+        return view('admin.books.index', compact('books'));
     }
 
     public function create()
     {
-        // TODO: Lấy danh sách Author và Category để đổ vào thẻ <select> trong form
+        $authors = \App\Models\Author::all(); 
+        $categories = \App\Models\Category::all();
+
         return view('admin.books.create', compact('authors', 'categories'));
     }
 
@@ -28,25 +32,41 @@ class BookController extends Controller
         // TODO: Sử dụng StoreBookRequest để validate
         // TODO: Xử lý Upload ảnh bìa (AnhBia) vào thư mục storage/uploads
         // TODO: Lưu vào bảng 'sach'
-        return redirect()->route('books.index')->with('success', 'Thêm sách mới thành công!');
+        return redirect()->route('admin.books.index')->with('success', 'Thêm sách mới thành công!');
     }
 
     public function edit($id)
     {
-        // TODO: Tìm sách theo ID, nếu không có trả về 404
+        $book = \App\Models\Book::findOrFail($id);
+
+        
+        $authors = \App\Models\Author::all(); 
+        $categories = \App\Models\Category::all();
+
         return view('admin.books.edit', compact('book', 'authors', 'categories'));
     }
 
     public function update(Request $request, $id)
     {
-        // TODO: Cập nhật thông tin sách
-        // TODO: Nếu có ảnh mới thì xóa ảnh cũ và cập nhật ảnh mới
-        return redirect()->route('books.index')->with('success', 'Cập nhật sách thành công!');
+        // 1. Tìm cuốn sách trong Database
+        $book = \App\Models\Book::findOrFail($id);
+
+        // 2. Cập nhật dữ liệu từ form gửi lên (Lấy theo thuộc tính name="..." trong file HTML)
+        if ($request->has('TenSach')) $book->TenSach = $request->input('TenSach');
+        if ($request->has('GiaBan')) $book->GiaBan = $request->input('GiaBan');
+        if ($request->has('TrangThai')) $book->TrangThai = $request->input('TrangThai');
+        if ($request->has('MoTa')) $book->MoTa = $request->input('MoTa');
+
+        // 3. Lệnh quan trọng nhất: Lưu đè xuống Database
+        $book->save();
+
+        // 4. Trở về trang quản lý và báo thành công
+        return redirect()->route('admin.books.index')->with('success', 'Cập nhật sách thành công!');
     }
 
     public function destroy($id)
     {
         // TODO: Xóa sách (Lưu ý: Kiểm tra nếu sách đã có trong đơn hàng thì không cho xóa hoặc dùng Soft Delete)
-        return redirect()->route('books.index')->with('success', 'Đã xóa sách khỏi hệ thống!');
+        return redirect()->route('admin.books.index')->with('success', 'Đã xóa sách khỏi hệ thống!');
     }
 }

@@ -9,67 +9,63 @@
 @section('title', $title)
 
 @section('content')
-<div class="admin-container">
-    <div class="admin-header">
-        <h1>{{ $title }}</h1>
-        <p class="welcome">{{ $subTitle }}</p>
-    </div>
-
-    <div class="admin-welcome">
-        <div class="welcome-text">
-            Đang thực hiện: <span class="admin-name">{{ $isEdit ? $category->TenDanhMuc : 'Mới' }}</span>
+<div class="card border-0 shadow-sm p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+        <div>
+            <h4 class="fw-bold mb-1 text-primary"><i class="fas fa-edit"></i> {{ $title }}</h4>
+            <p class="text-muted small mb-0">{{ $subTitle }}</p>
         </div>
-        <div class="action-buttons">
-            <a class="btn btn-outline" href="{{ route('categories.index') }}">
+        <div class="text-end">
+            <a class="btn btn-outline-secondary btn-sm" href="{{ route('admin.categories.index') }}">
                 <i class="fas fa-chevron-left"></i> Quay lại
             </a>
         </div>
     </div>
 
-    <div class="admin-content">
-        @if($errors->any())
-            <div class="card card-pad" style="border-left: 5px solid #f8d7da; margin-bottom: 20px;">
-                <ul style="list-style: none; color: #721c24;">
-                    @foreach($errors->all() as $error)
-                        <li><i class="fas fa-exclamation-circle"></i> {{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                    <li><i class="fas fa-exclamation-circle"></i> {{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form action="{{ $isEdit ? route('admin.categories.update', $category->ID) : route('admin.categories.store') }}" method="POST">
+        @csrf
+        @if($isEdit)
+            @method('PUT')
         @endif
 
-        <div class="form-card">
-            <form action="{{ $isEdit ? route('categories.update', $category->ID) : route('categories.store') }}" method="POST">
-                @csrf
-                @if($isEdit)
-                    @method('PUT')
-                @endif
-
-                <div class="form-grid">
-                    <div class="form-group form-span-2">
-                        <label for="TenDanhMuc">Tên danh mục</label>
-                        <input type="text" name="TenDanhMuc" id="TenDanhMuc" 
-                               value="{{ old('TenDanhMuc', $category->TenDanhMuc ?? '') }}" 
-                               required placeholder="Ví dụ: Văn học Kinh điển, Kinh tế tri thức...">
-                        @error('TenDanhMuc')
-                            <small style="color: #e53e3e; font-weight: 600; margin-top: 5px; display: block;">
-                                <i class="fas fa-exclamation-circle"></i> {{ $message }}
-                            </small>
-                        @enderror
-                    </div>
+        <div class="row mb-4">
+            <div class="col-md-8 col-lg-6">
+                <div class="mb-3">
+                    <label for="TenDanhMuc" class="form-label fw-bold">Tên danh mục <span class="text-danger">*</span></label>
+                    <input type="text" name="TenDanhMuc" id="TenDanhMuc" 
+                           class="form-control form-control-lg @error('TenDanhMuc') is-invalid @enderror" 
+                           value="{{ old('TenDanhMuc', $category->TenDanhMuc ?? '') }}" 
+                           required placeholder="Ví dụ: Văn học Kinh điển, Kinh tế tri thức...">
+                    
+                    @error('TenDanhMuc')
+                        <div class="invalid-feedback fw-bold">
+                            <i class="fas fa-exclamation-circle"></i> {{ $message }}
+                        </div>
+                    @enderror
                 </div>
-
-                <div class="form-actions">
-                    <a href="{{ route('categories.index') }}" class="btn btn-outline">Hủy bỏ</a>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> {{ $isEdit ? 'Cập nhật ngay' : 'Lưu danh mục' }}
-                    </button>
+                
+                <div class="text-muted small mt-2">
+                    <i class="fas fa-info-circle"></i> Tên danh mục sẽ được hiển thị trên menu chính của website người dùng.
                 </div>
-            </form>
+            </div>
         </div>
 
-        <div class="footer">
-            Hiên Sách Admin Panel - Bảo mật & Hiệu quả
+        <div class="mt-4 pt-3 border-top">
+            <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary px-4 me-2">Hủy bỏ</a>
+            <button type="submit" class="btn btn-primary px-5">
+                <i class="fas fa-save"></i> {{ $isEdit ? 'Cập nhật ngay' : 'Lưu danh mục' }}
+            </button>
         </div>
-    </div>
+    </form>
 </div>
 @endsection

@@ -10,7 +10,7 @@
                 <div class="col-md-6">
                     <h6>Thông tin người nhận</h6>
                     <p class="mb-1"><strong>{{ $order->user->HoTen }}</strong></p>
-                    <p class="mb-1">SĐT: {{ $order->user->SoDienThoai }}</p>
+                    <p class="mb-1">SĐT: {{ $order->SoDienThoai }}</p>
                     <p class="mb-0">Địa chỉ: {{ $order->DiaChiGiaoHang }}</p>
                 </div>
                 <div class="col-md-6 text-md-end">
@@ -28,13 +28,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($order->details as $detail)
-                    <tr>
-                        <td>{{ $detail->book->TenSach }}</td>
-                        <td class="text-center">{{ $detail->SoLuong }}</td>
-                        <td class="text-end">{{ number_format($detail->GiaBan) }}đ</td>
-                    </tr>
-                    @endforeach
+                    @if($order->details && $order->details->count() > 0)
+                        @foreach($order->details as $detail)
+                            <tr>
+                                <td>{{ $detail->book->TenSach ?? 'Không xác định' }}</td>
+                                <td class="text-center">{{ $detail->SoLuong }}</td>
+                                <td class="text-end">{{ number_format($detail->GiaBan) }}đ</td>
+                            </tr>
+                        @endforeach
+                    @else
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">Không tìm thấy chi tiết sản phẩm.</td>
+                        </tr>
+                    @endif
                 </tbody>
             </table>
             

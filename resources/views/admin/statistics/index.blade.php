@@ -3,104 +3,150 @@
 @section('title', 'Thống kê & Báo cáo')
 
 @section('content')
-<div class="admin-container">
-    <div class="admin-header">
-        <h1>THỐNG KÊ & BÁO CÁO CHUYÊN SÂU</h1>
-        <p class="welcome">Phân tích doanh thu và hiệu quả kinh doanh</p>
+<div class="card border-0 shadow-sm p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+        <div>
+            <h4 class="fw-bold mb-1 text-primary"><i class="fas fa-chart-line"></i> THỐNG KÊ & BÀO CÁO CHUYÊN SÂU</h4>
+            <p class="text-muted small mb-0">Phân tích doanh thu và hiệu quả kinh doanh của Hiên Sách</p>
+        </div>
+        <div class="text-end text-muted small">
+            <div>Cập nhật lúc: {{ date('H:i d/m/Y') }}</div>
+        </div>
     </div>
 
-    <div class="admin-content">
-        <div class="card card-pad" style="margin-bottom: 25px;">
-            <form method="GET" action="{{ route('statistics.index') }}" class="search-form">
-                <strong>Từ ngày:</strong>
-                <input type="date" name="tu" value="{{ $tu }}">
-                <strong>Đến ngày:</strong>
-                <input type="date" name="den" value="{{ $den }}">
-                <button type="submit" class="btn btn-primary">Lọc dữ liệu</button>
-                <a href="{{ route('statistics.index') }}" class="btn btn-outline">Reset</a>
+    <div class="card bg-light border-0 mb-4">
+        <div class="card-body">
+            <form method="GET" action="{{ route('admin.statistics.index') }}" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold text-muted">Từ ngày</label>
+                    <input type="date" name="tu" class="form-control" value="{{ $tu }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold text-muted">Đến ngày</label>
+                    <input type="date" name="den" class="form-control" value="{{ $den }}">
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary px-4"><i class="fas fa-filter"></i> Lọc dữ và Báo cáo</button>
+                    <a href="{{ route('admin.statistics.index') }}" class="btn btn-outline-secondary">Làm mới</a>
+                </div>
             </form>
         </div>
-        
-        <div class="card card-pad" style="margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px dashed #667eea;">
-            <div>
-                <h3 style="margin:0; color:#2d3748; font-size: 1.1rem; font-weight: 800;">
-                    <i class="fas fa-file-export"></i> XUẤT BÁO CÁO
-                </h3>
-                <p style="margin:5px 0 0; font-size:12px; color:#718096;">Tải dữ liệu chi tiết từ {{ $tu }} đến {{ $den }}</p>
-            </div>
-            <div class="action-buttons">
-                <a href="{{ route('statistics.export', ['tu' => $tu, 'den' => $den]) }}" class="btn btn-primary" style="background: #27ae60; border: none;">
-                    <i class="fas fa-file-excel"></i> Xuất Excel (.xlsx)
-                </a>
-                <button class="btn btn-outline" onclick="window.print()">
-                    <i class="fas fa-print"></i> In báo cáo
-                </button>
-            </div>
+    </div>
+    
+    <div class="alert alert-info border-0 shadow-sm mb-4 d-flex justify-content-between align-items-center no-print">
+        <div>
+            <h6 class="fw-bold mb-1"><i class="fas fa-file-export"></i> TRÍCH XUẤT DỮ LIỆU</h6>
+            <p class="small mb-0 text-dark">Xuất tệp báo cáo chi tiết từ ngày <strong>{{ date('d/m/Y', strtotime($tu)) }}</strong> đến <strong>{{ date('d/m/Y', strtotime($den)) }}</strong></p>
         </div>
-
-        <div style="display: flex; gap: 20px; margin-bottom: 30px;">
-            <div style="flex: 1; background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; padding: 25px; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(39,174,96,0.3);">
-                <div style="font-size: 14px; opacity: 0.9; font-weight: 800;">TỔNG DOANH THU</div>
-                <div style="font-size: 2rem; margin: 10px 0; font-weight: 900;">{{ number_format($revenueData->DoanhThu ?? 0) }} đ</div>
-            </div>
-            <div style="flex: 1; background: linear-gradient(135deg, #2980b9, #3498db); color: white; padding: 25px; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(41,128,185,0.3);">
-                <div style="font-size: 14px; opacity: 0.9; font-weight: 800;">ĐƠN HÀNG THÀNH CÔNG</div>
-                <div style="font-size: 2rem; margin: 10px 0; font-weight: 900;">{{ $revenueData->SoDon ?? 0 }} đơn</div>
-            </div>
-        </div>
-
-        <div class="form-grid">
-            <div class="card card-pad">
-                <h3 style="margin-bottom: 15px; color: #2d3748;"><i class="fas fa-trophy" style="color: #f1c40f;"></i> Top 10 Sách Bán Chạy</h3>
-                <div class="table-wrap">
-                    <table class="table" style="min-width: 100%;">
-                        <thead>
-                            <tr>
-                                <th>Tên sách</th>
-                                <th style="text-align: center;">Đã bán</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($bestSellers as $book)
-                            <tr>
-                                <td><span style="font-weight: 700;">{{ $book->TenSach }}</span></td>
-                                <td style="text-align: center;"><span class="badge badge-green">{{ $book->TongBan }}</span></td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="card card-pad">
-                <h3 style="margin-bottom: 15px; color: #2d3748;"><i class="fas fa-star" style="color: #e67e22;"></i> Khách Hàng Tích Cực</h3>
-                <div class="table-wrap">
-                    <table class="table" style="min-width: 100%;">
-                        <thead>
-                            <tr>
-                                <th>Khách hàng</th>
-                                <th style="text-align: center;">Số đơn</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($topUsers as $user)
-                            <tr>
-                                <td>
-                                    <div style="font-weight: 700;">{{ $user->HoTen }}</div>
-                                    <small style="color: #718096;">{{ $user->Email }}</small>
-                                </td>
-                                <td style="text-align: center;"><span class="badge badge-blue" style="background: #e0e7ff; color: #3730a3;">{{ $user->SoDon }}</span></td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer">
-            © {{ date('Y') }} Hiên Sách - Hệ thống Báo cáo Kinh doanh
+        <div>
+            <a href="{{ route('admin.statistics.export', ['tu' => $tu, 'den' => $den]) }}" class="btn btn-success">
+                <i class="fas fa-file-excel"></i> Xuất Excel (.xlsx)
+            </a>
+            <button class="btn btn-dark ms-2" onclick="window.print()">
+                <i class="fas fa-print"></i> In trang này
+            </button>
         </div>
     </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="p-4 rounded-4 shadow-sm text-white" style="background: linear-gradient(135deg, #27ae60, #1e8449);">
+                <div class="small opacity-75 fw-bold mb-1"><i class="fas fa-money-bill-wave"></i> TỔNG DOANH THU</div>
+                <div class="display-6 fw-bold">{{ number_format($revenueData->DoanhThu ?? 0) }} đ</div>
+                <div class="mt-2 small">Dựa trên các đơn hàng đã hoàn thành</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="p-4 rounded-4 shadow-sm text-white" style="background: linear-gradient(135deg, #2980b9, #1b4f72);">
+                <div class="small opacity-75 fw-bold mb-1"><i class="fas fa-shopping-cart"></i> ĐƠN HÀNG THÀNH CÔNG</div>
+                <div class="display-6 fw-bold">{{ $revenueData->SoDon ?? 0 }} <small class="fs-4">đơn</small></div>
+                <div class="mt-2 small">Số lượng giao dịch thành công</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card border h-100">
+                <div class="card-header bg-white py-3">
+                    <h6 class="fw-bold m-0 text-dark"><i class="fas fa-trophy text-warning me-2"></i> Top 10 Sách Bán Chạy Nhất</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light small fw-bold text-muted text-uppercase">
+                                <tr>
+                                    <th class="ps-4">Tên sách</th>
+                                    <th class="text-center">Số lượng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($bestSellers as $book)
+                                <tr>
+                                    <td class="ps-4 py-3 fw-bold text-dark">{{ $book->TenSach }}</td>
+                                    <td class="text-center"><span class="badge bg-success rounded-pill px-3">{{ $book->TongBan }}</span></td>
+                                </tr>
+                                @empty
+                                <tr><td colspan="2" class="text-center py-4 text-muted small italic">Không có dữ liệu</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card border h-100">
+                <div class="card-header bg-white py-3">
+                    <h6 class="fw-bold m-0 text-dark"><i class="fas fa-star text-orange me-2"></i> Khách Hàng Thân Thiết nhất</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light small fw-bold text-muted text-uppercase">
+                                <tr>
+                                    <th class="ps-4">Thông tin khách hàng</th>
+                                    <th class="text-center">Số đơn</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($topUsers as $user)
+                                <tr>
+                                    <td class="ps-4 py-3">
+                                        <div class="fw-bold text-dark">{{ $user->HoTen }}</div>
+                                        <div class="small text-muted">{{ $user->Email }}</div>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-info text-dark rounded-pill px-3 fw-bold">{{ $user->SoDon }}</span>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr><td colspan="2" class="text-center py-4 text-muted small italic">Không có dữ liệu</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center text-muted mt-5 pt-3 border-top small">
+        <p class="mb-1">© {{ date('Y') }} <strong>Hiên Sách</strong> - Hệ thống Báo cáo Kinh doanh Đồ án Chuyên ngành</p>
+        <p class="small italic text-muted">Báo cáo được tạo tự động bởi hệ thống quản trị, thời gian xuất: {{ date('H:i:s d/m/Y') }}</p>
+    </div>
 </div>
+
+<style>
+    .text-orange { color: #e67e22; }
+    @media print {
+        .no-print { display: none !important; }
+        .card { border: none !important; shadow: none !important; }
+        body { background: white !important; }
+        .text-white { color: black !important; }
+        /* Đảm bảo in ra vẫn thấy các khối màu */
+        .rounded-4 { border: 2px solid #eee !important; background: white !important; color: black !important; }
+    }
+</style>
 @endsection
