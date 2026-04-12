@@ -55,7 +55,7 @@ class BookController extends Controller
         // Lấy các đánh giá có IDSach khớp, kèm thông tin người dùng (user), sắp xếp mới nhất lên đầu
         $reviews = Review::with('user')
                         ->where('IDSach', $id)
-                        ->where('TrangThai', 'active')
+                        ->whereIn('TrangThai', ['approved', 'Đã duyệt']) // Chỉ lấy những cái admin đã bấm nút xanh
                         ->orderBy('NgayDanhGia', 'desc')
                         ->get();
 

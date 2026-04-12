@@ -32,7 +32,7 @@
                             @php $total += $details['price'] * $details['quantity']; @endphp
                             <tr style="border-bottom: 1px solid #eee;">
                                 <td style="padding: 15px; display: flex; align-items: center; gap: 15px;">
-                                    <img src="{{ $details['image'] ?? '' }}" style="width: 70px; border-radius: 8px;" alt="Bìa sách">
+                                    <img src="{{ asset('storage/' . ($details['image'] ?? '')) }}" style="width: 70px; border-radius: 8px;" alt="Bìa sách">
                                     <span style="font-weight: bold;">{{ $details['title'] ?? 'Tên sách' }}</span>
                                 </td>
                                 <td style="padding: 15px;">{{ number_format($details['price']) }}đ</td>

@@ -25,6 +25,10 @@
                         <th>Sản phẩm</th>
                         <th class="text-center">Số lượng</th>
                         <th class="text-end">Giá</th>
+                        {{-- Chỉ hiện cột hành động nếu đơn hàng đã giao --}}
+                            @if($order->TrangThai == 'Đã giao')
+                                <th class="text-center">Hành động</th>
+                            @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -34,6 +38,14 @@
                                 <td>{{ $detail->book->TenSach ?? 'Không xác định' }}</td>
                                 <td class="text-center">{{ $detail->SoLuong }}</td>
                                 <td class="text-end">{{ number_format($detail->GiaBan) }}đ</td>
+                                @if($order->TrangThai == 'Đã giao')
+                                    <td class="text-center">
+                                        <a href="{{ route('books.show', $detail->IDSach) }}#review-form" 
+                                        class="btn btn-sm btn-warning fw-bold shadow-sm">
+                                            <i class="fas fa-star"></i> Đánh giá
+                                        </a>
+                                    </td>
+                                @endif
                             </tr>
                         @endforeach
                     @else

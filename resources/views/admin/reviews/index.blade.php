@@ -19,7 +19,17 @@
         <div class="fw-bold fs-5 text-dark">
             <i class="fas fa-list-ul me-2"></i>Danh sách phản hồi
         </div>
+        
         <div class="action-buttons">
+        {{-- NÚT DUYỆT TẤT CẢ MỚI --}}
+        <form action="{{ route('admin.reviews.approveAll') }}" method="POST" onsubmit="return confirm('Bạn có chắc muốn phê duyệt TOÀN BỘ đánh giá đang chờ không?')">
+            @csrf
+            @method('PATCH')
+            <button type="submit" class="btn btn-success btn-sm shadow-sm">
+                <i class="fas fa-check-double"></i> Duyệt tất cả
+            </button>
+        </form>
+        
             <a class="btn btn-outline-secondary btn-sm" href="{{ route('admin.dashboard') }}">
                 <i class="fas fa-arrow-left"></i> Dashboard
             </a>

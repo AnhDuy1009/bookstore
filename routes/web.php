@@ -95,6 +95,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/edit', [ProfileController::class, 'edit'])->name('edit');
         Route::put('/update', [ProfileController::class, 'update'])->name('update');
         Route::get('/change-password', [ProfileController::class, 'password'])->name('password');
+        Route::get('/my-reviews', [FrontendReviewController::class, 'index'])->name('reviews');
     });
 
     // Quy trình thanh toán & Đơn hàng
@@ -105,6 +106,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/history', [OrderController::class, 'list'])->name('list');            // Lịch sử mua hàng
         Route::get('/track/{id}', [OrderController::class, 'track'])->name('track');       // Chi tiết đơn
         Route::post('/cancel/{id}', [OrderController::class, 'cancel'])->name('cancel');   // Hủy đơn hàng
+
     });
 
     // Đánh giá sản phẩm
@@ -143,11 +145,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // 4. Quản lý Đánh giá
     Route::prefix('reviews')->name('reviews.')->group(function () {
-        Route::get('/', [ReviewController::class, 'index'])->name('index');     // -> admin.reviews.index
+        Route::get('/', [ReviewController::class, 'index'])->name('index');
+        Route::patch('/approve-all', [ReviewController::class, 'approveAll'])->name('approveAll'); // URL: admin/reviews/approve-all
         Route::patch('/{id}/approve', [ReviewController::class, 'approve'])->name('approve');
         Route::delete('/{id}', [ReviewController::class, 'destroy'])->name('destroy');
     });
-
+    
     // 5. Thống kê
     Route::prefix('statistics')->name('statistics.')->group(function () {
         Route::get('/', [StatisticController::class, 'index'])->name('index'); // -> admin.statistics.index

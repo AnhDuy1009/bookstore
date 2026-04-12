@@ -22,7 +22,11 @@
                 <p class="text-danger fw-bold mb-1">{{ number_format($order->TongTien) }}đ</p>
                 <div class="d-flex align-items-center gap-2">
                 <a href="{{ route('order.track', $order->id) }}" class="btn btn-sm btn-outline-primary">Chi tiết</a>
-
+                @if($order->TrangThai == 'Đã giao')
+                    <a href="{{ route('order.track', $order->ID) }}" class="btn btn-sm btn-success">
+                        <i class="fas fa-star"></i> Đánh giá
+                    </a>
+                @endif
                 @if($order->TrangThai == 'Đang xử lý')
                     <form action="{{ route('order.cancel', $order->id) }}" method="POST" 
                         onsubmit="return confirm('Nghĩa ơi, bạn có chắc chắn muốn hủy đơn hàng này không?')">

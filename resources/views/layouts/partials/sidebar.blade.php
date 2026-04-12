@@ -33,6 +33,11 @@
                 <i class="fas fa-user-shield fa-fw"></i> Quản lý Người dùng
             </a>
         </li>
+        <li class="nav-item">
+            <a href="{{ url('admin/reviews') }}" class="nav-link d-flex align-items-center gap-3 {{ request()->is('admin/reviews*') ? 'active' : '' }}">
+                <i class="fas fa-star fa-fw"></i> Quản lý đánh giá
+            </a>
+        </li>
     </ul>
 
     {{-- NÚT XEM TRANG CHỦ --}}

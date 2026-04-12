@@ -13,13 +13,12 @@ class ReviewController extends Controller
 {
     public function index()
     {
-        $reviews = Review::with('book')
-                    ->where('IDNguoiDung', Auth::id())
-                    ->latest()
-                    ->get();
+       $reviews = Review::with('book')
+                ->where('IDNguoiDung', Auth::id())
+                ->latest('NgayDanhGia') 
+                ->get();
         return view('frontend.reviews.index', compact('reviews'));
     }
-
 
     public function store(Request $request)
     {
@@ -43,8 +42,14 @@ class ReviewController extends Controller
             ->join('chi_tiet_don_hang', 'don_hang.ID', '=', 'chi_tiet_don_hang.IDDonHang')
             ->where('don_hang.IDNguoiDung', $userId)
             ->where('chi_tiet_don_hang.IDSach', $bookId)
+            ->where('don_hang.TrangThai', 'Đã giao') // CHỈ CHO PHÉP KHI ĐÃ GIAO
             ->select('don_hang.ID')
+            ->latest('don_hang.NgayDat')
             ->first();
+
+            if (!$donHang) {
+                return redirect()->back()->with('error', 'Bạn chỉ có thể đánh giá những cuốn sách đã mua và nhận hàng thành công!');
+            }
 
        
         $finalOrderId = $donHang ? $donHang->ID : 100;
@@ -53,12 +58,13 @@ class ReviewController extends Controller
         Review::create([
             'IDNguoiDung' => $userId,        
             'IDSach'      => $bookId,
-            'IDDonHang'   => $finalOrderId, 
+            'IDDonHang'   => $donHang->ID, // Gắn ID đơn hàng thực tế tìm được 
             'DiemDanhGia' => $request->rating,  
             'NoiDung'     => $request->content,
             'NgayDanhGia' => now(),
-            'TrangThai'   => 'active'
+            'TrangThai'   => 'pending' // Mặc định là pending, chờ admin duyệt
         ]);
+        
 
         /* Notification::create([
             'IDNguoiDung' => $userId,

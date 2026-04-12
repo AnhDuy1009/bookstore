@@ -27,33 +27,30 @@
     @else
         <div style="display: flex; flex-direction: column; gap: 20px;">
             @foreach($reviews as $review)
-                <div style="background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 3px 15px rgba(0,0,0,0.05); border-left: 5px solid #f1c40f;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                        <div>
-                            {{-- Tên sách (nếu đã liên kết Model) --}}
-                            <h4 style="margin: 0 0 10px 0; color: #2c3e50;">
-                                Đánh giá cho sách: <span style="color: #3498db;">{{ $review->book->TenSach ?? 'Sách ID: ' . $review->book_id }}</span>
-                            </h4>
-                            
-                            {{-- Hiển thị số sao vàng --}}
-                            <div style="color: #f1c40f; font-size: 16px; margin-bottom: 15px;">
-                                @for($i = 1; $i <= 5; $i++)
-                                    @if($i <= $review->rating)
-                                        <i class="fas fa-star"></i>
-                                    @else
-                                        <i class="far fa-star"></i>
-                                    @endif
-                                @endfor
-                                <span style="color: #95a5a6; font-size: 13px; margin-left: 10px;">
-                                    <i class="far fa-clock"></i> {{ $review->created_at->format('d/m/Y H:i') }}
-                                </span>
-                            </div>
-                        </div>
+                <div style="background: #fff; padding: 25px; ...">
+                    <h4 style="...">
+                        {{-- Sử dụng quan hệ 'book' và cột 'TenSach' trong database --}}
+                        Đánh giá cho sách: <span style="...">{{ $review->book->TenSach ?? 'Sách không còn tồn tại' }}</span>
+                    </h4>
+                    
+                    <div style="color: #f1c40f; ...">
+                        @for($i = 1; $i <= 5; $i++)
+                            {{-- Sửa rating -> DiemDanhGia --}}
+                            @if($i <= $review->DiemDanhGia)
+                                <i class="fas fa-star"></i>
+                            @else
+                                <i class="far fa-star"></i>
+                            @endif
+                        @endfor
+                        <span style="...">
+                            {{-- Sửa created_at -> NgayDanhGia --}}
+                            <i class="far fa-clock"></i> {{ date('d/m/Y H:i', strtotime($review->NgayDanhGia)) }}
+                        </span>
                     </div>
                     
-                    {{-- Nội dung đánh giá --}}
-                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; font-style: italic; color: #555; line-height: 1.6;">
-                        "{{ $review->content }}"
+                    {{-- Sửa content -> NoiDung --}}
+                    <div style="...">
+                        "{{ $review->NoiDung }}"
                     </div>
                 </div>
             @endforeach

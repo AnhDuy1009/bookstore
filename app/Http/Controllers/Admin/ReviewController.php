@@ -22,7 +22,7 @@ class ReviewController extends Controller
     {
         $review = Review::findOrFail($id);
 
-        $review->TrangThai = 'approved';
+        $review->TrangThai = 'Đã duyệt'; // Cập nhật trạng thái thành "Đã duyệt"
         $review->save();
 
         return redirect()->back()->with('success', 'Đã duyệt đánh giá của khách hàng thành công!');
@@ -36,5 +36,13 @@ class ReviewController extends Controller
         $review->delete();
 
         return redirect()->back()->with('success', 'Đã xóa đánh giá khỏi hệ thống!');
+    }
+    public function approveAll()
+    {
+        // Tìm tất cả những dòng đang là 'active' (hoặc 'pending') để đổi sang 'Đã duyệt'
+        $affectedRows = \App\Models\Review::whereIn('TrangThai', ['active', 'pending', 'Chờ xử lý'])
+            ->update(['TrangThai' => 'Đã duyệt']);
+
+        return redirect()->back()->with('success', "Đã duyệt xong $affectedRows đánh giá!");
     }
 }

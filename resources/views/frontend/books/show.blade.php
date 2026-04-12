@@ -7,7 +7,7 @@
     {{-- 1. THÔNG TIN CHI TIẾT SÁCH --}}
     <div style="background: #fff; padding: 30px; border-radius: 15px; display: flex; gap: 50px; flex-wrap: wrap; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
         <div style="flex: 1; min-width: 350px;">
-            <img src="{{ $book->Link_Anh_Bia }}" style="width: 100%; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+            <img src="{{ asset('storage/' . $book->Link_image) }}" style="width: 100%; object-fit: contain;border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
         </div>
 
         <div style="flex: 1.5; min-width: 350px;">
@@ -49,7 +49,7 @@
     </div>
 
     {{-- 2. KHU VỰC ĐÁNH GIÁ SÁCH (Mới thêm) --}}
-    <div style="background: #fff; padding: 30px; border-radius: 15px; margin-top: 40px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+    <div id="review-form" style="background: #fff; padding: 30px; border-radius: 15px; margin-top: 40px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
         <h3 style="margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;">Đánh giá cuốn sách này</h3>
 
         {{-- Hiển thị thông báo Lỗi hoặc Thành công --}}
@@ -61,6 +61,17 @@
 
         {{-- Form Đánh Giá --}}
         @auth
+                @php
+                // Kiểm tra xem người dùng hiện tại đã mua và nhận cuốn sách này chưa
+                $daMuaVaNhanHang = DB::table('don_hang')
+                    ->join('chi_tiet_don_hang', 'don_hang.ID', '=', 'chi_tiet_don_hang.IDDonHang')
+                    ->where('don_hang.IDNguoiDung', Auth::id())
+                    ->where('chi_tiet_don_hang.IDSach', $book->ID)
+                    ->where('don_hang.TrangThai', 'Đã giao')
+                    ->exists();
+                @endphp
+             @if($daMuaVaNhanHang)
+              {{-- CHỈ HIỆN FORM KHI ĐÃ MUA VÀ NHẬN HÀNG --}}   
             <form action="{{ route('reviews.store') }}" method="POST">
                 @csrf
                 {{-- Truyền ngầm ID của cuốn sách đang xem --}}
@@ -86,8 +97,15 @@
                     Gửi Đánh Giá
                 </button>
             </form>
+            @else
+                {{-- TRƯỜNG HỢP 2: ĐÃ ĐĂNG NHẬP + CHƯA MUA HÀNG --}}
+                    <div style="padding: 20px; background: #fff3cd; color: #856404; border-radius: 8px; border: 1px solid #ffeeba; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Bạn cần <b>mua sách</b> và đơn hàng ở trạng thái <b>"Đã giao"</b> mới có thể đánh giá.</span>
+                    </div>
+                @endif
         @else
-            {{-- Giao diện khi chưa đăng nhập --}}
+            {{-- Giao diện khi chưa đăng nhập (Giữ nguyên) --}}
             <div style="text-align: center; padding: 25px; background: #f8f9fa; border-radius: 8px;">
                 <p style="color: #2c3e50; margin-bottom: 15px; font-size: 1.1rem;">
                     Bạn muốn chia sẻ cảm nhận về cuốn sách này? <br>

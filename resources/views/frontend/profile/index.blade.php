@@ -27,9 +27,19 @@
                         <a href="{{ route('profile.edit') }}" class="btn btn-outline-primary px-4">
                             <i class="fas fa-user-edit"></i> Chỉnh sửa
                         </a>
+                        
                         <a href="{{ route('order.list') }}" class="btn btn-primary px-4">
                             <i class="fas fa-history"></i> Lịch sử mua hàng
                         </a>
+                        <a href="{{ route('profile.reviews') }}" class="btn btn-warning px-4 text-white">
+                            <i class="fas fa-star"></i> Đánh giá của tôi
+                        </a>
+                        {{-- Kiểm tra nếu là Admin thì mới hiển thị nút này --}}
+                       @if(Auth::check() && trim(strtolower(Auth::user()->VaiTro)) == 'admin')
+                            <a href="{{ url('/admin/orders') }}" class="btn btn-dark px-4 ms-2">
+                                <i class="fas fa-user-shield me-1"></i> Quản lý hệ thống
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>
