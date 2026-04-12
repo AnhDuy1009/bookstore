@@ -34,7 +34,7 @@ class CartService
             $cart[$id] = [
                 'title' => $book->TenSach,          // Cột tên sách trong DB của bạn
                 'price' => $book->GiaBan,           // Cột giá bán trong DB
-                'image' => $book->Link_Anh_Bia,     // Cột link ảnh trong DB
+                'image' => $book->Link_image,     // Cột link ảnh trong DB
                 'quantity' => $quantity
             ];
         }

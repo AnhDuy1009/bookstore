@@ -118,29 +118,28 @@ class OrderController extends Controller
     }
    public function list(\Illuminate\Http\Request $request)
     {
-    // 1. Lấy trạng thái từ Tab người dùng nhấn (mặc định là 'Tất cả')
     $tab = $request->query('tab', 'Tất cả');
 
-    // 2. Xây dựng Query lấy đơn hàng của đúng User đang đăng nhập
-    $query = \App\Models\Order::where('IDNguoiDung', \Illuminate\Support\Facades\Auth::id());
+    // THAY ĐỔI: Thêm with('details.book') để lấy dữ liệu sách
+    $query = \App\Models\Order::with('details.book')
+                ->where('IDNguoiDung', \Illuminate\Support\Facades\Auth::id());
 
-    // 3. Nếu Tab khác 'Tất cả', tiến hành lọc theo cột TrangThai 
     if ($tab !== 'Tất cả') {
         $query->where('TrangThai', $tab);
     }
 
-    // 4. Sắp xếp mới nhất dựa trên cột NgayDat
     $orders = $query->orderBy('NgayDat', 'desc')->get();
 
-    // 5. BIẾN ĐỔI DỮ LIỆU":
     $orders->each(function ($order) {
         $order->setAttribute('id', $order->ID);
-        
         $order->setAttribute('created_at', $order->NgayDat);
     });
 
     return view('frontend.orders.list', compact('orders', 'tab'));
     }
+
+   
+    
 
     public function track($id)
     {

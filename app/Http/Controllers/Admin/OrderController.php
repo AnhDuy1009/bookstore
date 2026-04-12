@@ -8,9 +8,17 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with('user')->orderBy('ID', 'desc')->paginate(10);
+        // Tạo query cơ bản
+        $query = Order::with('user');
+
+        // Kiểm tra nếu có lọc theo trạng thái
+        if ($request->has('status') && $request->status != '') {
+            $query->where('TrangThai', $request->status);
+        }
+
+        $orders = $query->orderBy('ID', 'desc')->paginate(10);
         
         return view('admin.orders.index', compact('orders'));
     }

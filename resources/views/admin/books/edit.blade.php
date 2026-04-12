@@ -14,7 +14,7 @@
             Mã sách: <span class="admin-name">#{{ $book->ID }}</span>
         </div>
         <div class="action-buttons">
-            <a href="{{ route('books.index') }}" class="btn btn-outline">
+            <a href="{{ route('admin.books.index') }}" class="btn btn-outline">
                 <i class="fas fa-chevron-left"></i> Quay lại danh sách
             </a>
         </div>
