@@ -3,34 +3,34 @@
 @section('title', 'Quên mật khẩu')
 
 @section('content')
-<h2 style="text-align: center; color: #2c3e50;">Khôi phục mật khẩu</h2>
-<p style="text-align: center; font-size: 0.9rem; color: #7f8c8d; margin-bottom: 20px;">
+<h2 class="auth-heading">Khôi phục mật khẩu</h2>
+<p class="auth-description">
     Nhập email của bạn để nhận liên kết đặt lại mật khẩu mới.
 </p>
 
 @if (session('status'))
-    <div style="background: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center;">
+    <div class="auth-status">
         {{ session('status') }}
     </div>
 @endif
 
-<form action="{{ route('password.email') }}" method="POST">
+<form action="{{ route('password.email') }}" method="POST" class="auth-form">
     @csrf
-    <div class="form-group" style="margin-bottom: 15px;">
+    <div class="form-group">
         <label>Địa chỉ Email</label>
         <input type="email" name="email" class="form-control" value="{{ old('email') }}" required placeholder="email@example.com">
         @error('email')
-            <small style="color: red; display: block; margin-top: 5px;">{{ $message }}</small>
+            <small class="error-text">{{ $message }}</small>
         @enderror
     </div>
 
-    <button type="submit" class="btn-submit" style="background-color: #3498db; color: white; width: 100%; padding: 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+    <button type="submit" class="btn-submit btn-primary">
         Gửi yêu cầu
     </button>
 </form>
 
-<div style="margin-top: 20px; text-align: center;">
-    <a href="{{ route('login') }}" style="text-decoration: none; font-size: 0.9rem;">
+<div class="auth-link-row">
+    <a href="{{ route('login') }}" class="auth-link">
         <i class="fas fa-arrow-left"></i> Quay lại đăng nhập
     </a>
 </div>

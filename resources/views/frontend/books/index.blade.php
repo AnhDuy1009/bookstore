@@ -4,77 +4,7 @@
 
 @section('content')
 
-<style>
-    /* Thu nhỏ mũi tên phân trang */
-    .pagination svg {
-        width: 20px !important;
-        height: 20px !important;
-    }
-    /* Ẩn dòng chữ Showing... dư thừa */
-    .pagination .flex.justify-between.flex-1 {
-        display: none !important;
-    }
-    .pagination .hidden.sm\:flex-1.sm\:flex.sm\:items-center.sm\:justify-between {
-        display: flex !important;
-    }
-    /* Fix tiêu đề sách không bị nhảy hàng/che khuất */
-    .book-card h4 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;  
-        overflow: hidden;
-        text-overflow: ellipsis;
-        height: 40px !important;
-        line-height: 20px !important;
-        margin: 10px 0 !important;
-    }
-
-    /* Container bao quanh phân trang */
-.pagination-container {
-    margin: 40px 0;
-    display: flex;
-    justify-content: center;
-}
-
-/* Ép danh sách số trang dàn hàng ngang */
-.pagination-container ul.pagination {
-    display: flex !important;
-    list-style: none !important;
-    padding-left: 0 !important;
-}
-
-/* Định dạng từng ô số */
-.pagination-container ul.pagination li {
-    margin: 0 5px;
-}
-
-.pagination-container ul.pagination li a, 
-.pagination-container ul.pagination li span {
-    display: block;
-    padding: 8px 16px;
-    border: 1px solid #ddd;
-    color: #3498db;
-    text-decoration: none;
-    border-radius: 4px;
-    transition: all 0.3s;
-}
-
-/* Hiệu ứng khi di chuột vào hoặc trang đang chọn */
-.pagination-container ul.pagination li.active span,
-.pagination-container ul.pagination li a:hover {
-    background-color: #3498db;
-    color: white;
-    border-color: #3498db;
-}
-
-/* Thu nhỏ mũi tên nếu nó còn hiện to */
-.pagination-container svg {
-    width: 20px !important;
-    height: 20px !important;
-}
-</style>
-
-<div class="container" style="display: flex; gap: 30px; margin-top: 30px;">
+<div class="container main-wrapper">
     {{-- SIDEBAR BỘ LỌC --}}
     <aside class="filter-sidebar">
     <div class="filter-header">
@@ -127,7 +57,7 @@
     </form>
 </aside>
     {{-- DANH SÁCH SÁCH --}}
-    <main style="flex: 1;">
+    <main class="book-content">
         <div class="category-page-wrapper">
     <div class="book-grid-container">
         @forelse($books as $book)
@@ -171,7 +101,7 @@
             </div>
         @empty
             <div class="no-results">
-                <img src="{{ asset('assets/images/no-book.png') }}" style="width: 100px; opacity: 0.5;">
+                <img src="{{ asset('assets/images/no-book.png') }}" alt="Không tìm thấy sách phù hợp">
                 <p>Không tìm thấy sách nào phù hợp với bộ lọc.</p>
             </div>
         @endforelse

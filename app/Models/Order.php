@@ -19,6 +19,7 @@ class Order extends Model
         'IDNguoiDung', 
         'NgayDat', 
         'TongTien', 
+        'PhiShip',
         'TrangThai', 
         'DiaChiGiaoHang', 
         'SoDienThoai',
@@ -28,6 +29,7 @@ class Order extends Model
     protected $casts = [
         'NgayDat' => 'datetime',
         'TongTien' => 'decimal:2',
+        'PhiShip' => 'decimal:2',
     ];
 
     /**
