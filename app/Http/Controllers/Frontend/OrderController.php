@@ -53,6 +53,9 @@ class OrderController extends Controller
             $tongTien += $item['price'] * $item['quantity'];
         }
 
+        // Phí vận chuyển cố định
+        $shippingFee = 30000;
+
         // Xử lý Voucher (Nếu có)
         if ($request->filled('VoucherCode')) {
             $voucher = \Illuminate\Support\Facades\DB::table('vouchers')
@@ -68,12 +71,16 @@ class OrderController extends Controller
             }
         }
 
+        // Tổng tiền thanh toán bao gồm phí ship
+        $tongTienThanhToan = $tongTien + $shippingFee;
+
         try {
             // 2. GỌI SERVICE TẠO ĐƠN HÀNG
             // Truyền trực tiếp session('cart') để đảm bảo dữ liệu mảng chuẩn nhất
             $order = $this->orderService->createOrder(Auth::id(), [
                 'MaDonHang'      => 'DH' . time(),
-                'total'          => $tongTien,
+                'total'          => $tongTienThanhToan,
+                'shipping_fee'   => $shippingFee,
                 'payment_method' => $request->PhuongThucThanhToan,
                 'address'        => $request->DiaChi, // Lưu vào cột DiaChiGiaoHang qua Service
                 'phone'          => $request->SDT     // Lưu vào cột SoDienThoai qua Service

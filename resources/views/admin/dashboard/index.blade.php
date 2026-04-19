@@ -3,25 +3,8 @@
 @section('title', 'Bảng điều khiển')
 
 @section('content')
-<style>
-   
-    .icon-box {
-        width: 48px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 12px;
-    }
-    .bg-primary-light { background-color: #e7f1ff; }
-    .bg-warning-light { background-color: #fff7e6; }
-    .bg-success-light { background-color: #e6f9f0; }
-    .bg-info-light { background-color: #e7f6f8; }
-    .card { transition: transform 0.2s; }
-    .card:hover { transform: translateY(-3px); }
-</style>
 
-<div class="container-fluid">
+<div class="container-fluid admin-dashboard">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bold m-0 text-dark">Tổng quan hệ thống</h3>
         <div class="badge bg-white text-muted shadow-sm p-2 px-3 border">
@@ -91,7 +74,7 @@
                     <h5 class="fw-bold"><i class="fas fa-chart-line text-primary me-2"></i> Xu hướng doanh thu 7 ngày</h5>
                 </div>
                 <div class="card-body">
-                    <canvas id="revenueChart" style="min-height: 300px;"></canvas>
+                    <canvas id="revenueChart" class="dashboard-chart"></canvas>
                 </div>
             </div>
         </div>

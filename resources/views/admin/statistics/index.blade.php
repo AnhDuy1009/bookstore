@@ -138,15 +138,5 @@
     </div>
 </div>
 
-<style>
-    .text-orange { color: #e67e22; }
-    @media print {
-        .no-print { display: none !important; }
-        .card { border: none !important; shadow: none !important; }
-        body { background: white !important; }
-        .text-white { color: black !important; }
-        /* Đảm bảo in ra vẫn thấy các khối màu */
-        .rounded-4 { border: 2px solid #eee !important; background: white !important; color: black !important; }
-    }
-</style>
+
 @endsection

@@ -6,9 +6,11 @@
 {{-- SECTION: HERO --}}
 <section class="hero">
     <div class="hero-content">
+        <div class="banner">
         <h1>Chào mừng bạn đến với Hiên Sách</h1>
         <p>Nơi hội tụ những tác phẩm văn học kinh điển và hiện đại.</p>
         <a href="{{ route('books.index') }}" class="btn-shop">Khám phá ngay</a>
+    </div>
     </div>
 </section>
 
@@ -126,43 +128,3 @@
 
 @endsection
 
-@push('styles')
-<style>
-    /* Tổng thể & Hero */
-    .hero { background: #f8f9fa; padding: 60px 0; text-align: center; margin-bottom: 40px; }
-    .hero h1 { color: #2c3e50; font-weight: bold; }
-    .btn-shop { display: inline-block; background: #3498db; color: white; padding: 12px 25px; border-radius: 5px; text-decoration: none; margin-top: 15px; }
-
-    /* Lưới sách */
-    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; margin-top: 30px; }
-    
-    /* Thẻ sách */
-    .book-card { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.3s; position: relative; }
-    .book-card:hover { transform: translateY(-5px); }
-    
-    .book-image { position: relative; overflow: hidden; }
-    .book-image img { width: 100%; height: 300px; object-fit: cover; border-radius: 5px; }
-    
-    .badge-hot { position: absolute; top: 10px; right: 10px; background: #e74c3c; color: white; padding: 2px 8px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-
-    .book-info { padding: 10px 0; }
-    .book-title { margin: 10px 0 5px; font-size: 16px; height: 40px; overflow: hidden; line-height: 1.3; }
-    .book-title a { text-decoration: none; color: #2c3e50; }
-    
-    .info-row { color: #7f8c8d; font-size: 13px; margin-bottom: 8px; }
-    
-    .price-row { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-    .price-current { color: #e67e22; font-weight: bold; font-size: 18px; }
-    .price-old { color: #95a5a6; text-decoration: line-through; font-size: 13px; }
-
-    /* Nút bấm */
-    .book-actions { display: flex; gap: 5px; }
-    .btn-add-cart { width: 100%; padding: 8px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; transition: 0.3s; }
-    .btn-add-cart:hover { background: #219150; }
-    .btn-wishlist { padding: 8px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; }
-
-    /* CTA */
-    .cta { background: #2c3e50; color: white; padding: 40px; text-align: center; margin-top: 50px; border-radius: 10px; }
-    .cta a { display: inline-block; background: #27ae60; color: white; padding: 10px 25px; border-radius: 5px; text-decoration: none; margin-top: 15px; font-weight: bold; }
-</style>
-@endpush

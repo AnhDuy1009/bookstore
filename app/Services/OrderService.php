@@ -22,6 +22,7 @@ class OrderService
                     'IDNguoiDung' => $userId,
                     'NgayDat' => now(),
                     'TongTien' => $checkoutData['total'],
+                    'PhiShip' => $checkoutData['shipping_fee'] ?? 0,
                     'TrangThai' => 'Đang xử lý',
                     'DiaChiGiaoHang' => $checkoutData['address'],
                     'SoDienThoai' => $checkoutData['phone'],
