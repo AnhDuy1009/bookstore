@@ -46,7 +46,7 @@
                     
                     <div class="price-row">
                         <span class="price-current">{{ number_format($book->GiaBan) }}đ</span>
-                        <span class="price-old">{{ number_format($book->GiaBan * 1.1) }}đ</span>
+                    
                     </div>
 
                     <div class="book-actions">
@@ -56,9 +56,7 @@
                                 <i class="fas fa-cart-plus"></i> Thêm vào giỏ
                             </button>
                         </form>
-                        <button class="btn-wishlist">
-                            <i class="far fa-heart"></i>
-                        </button>
+                        
                     </div>
                 </div>
             </div>
