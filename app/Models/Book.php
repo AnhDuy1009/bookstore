@@ -11,7 +11,7 @@ class Book extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'TenSach', 'GiaBan', 'SoLuongTon', 'MoTa', 'IDTacGia', 'IDDanhMuc', 'NhaXuatBan', 'NamXuatBan', 'SoTrang', 'Link_Anh_Bia'
+        'TenSach', 'GiaBan', 'SoLuongTon', 'MoTa', 'IDTacGia', 'IDDanhMuc', 'NhaXuatBan', 'NamXuatBan', 'SoTrang', 'Link_Anh_Bia','Link_image', 'TrangThai',
     ];
 
     // Lấy thông tin tác giả
