@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Book;
+use App\Services\EmailService;
 use App\Services\OrderService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -15,11 +16,13 @@ class OrderController extends Controller
 {
     protected $orderService;
     protected $paymentService;
+    protected $emailService;
 
-    public function __construct(OrderService $orderService, \App\Services\PaymentService $paymentService)
+    public function __construct(OrderService $orderService, \App\Services\PaymentService $paymentService, EmailService $emailService)
     {
         $this->orderService = $orderService;
         $this->paymentService = $paymentService;
+        $this->emailService = $emailService;
     }
 
     public function checkout()
@@ -85,6 +88,15 @@ class OrderController extends Controller
                 'address'        => $request->DiaChi, // Lưu vào cột DiaChiGiaoHang qua Service
                 'phone'          => $request->SDT     // Lưu vào cột SoDienThoai qua Service
             ], session('cart'));
+
+            // Không chặn luồng đặt hàng nếu gửi mail thất bại.
+            try {
+                $this->emailService->sendOrderConfirmation($order);
+            } catch (\Throwable $mailException) {
+                \Log::warning('Gửi email xác nhận đơn hàng thất bại: ' . $mailException->getMessage(), [
+                    'order_id' => $order->ID,
+                ]);
+            }
 
             // 3. ĐIỀU HƯỚNG THEO PHƯƠNG THỨC THANH TOÁN
             switch ($request->PhuongThucThanhToan) {
