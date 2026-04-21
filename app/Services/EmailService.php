@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Mail\OrderConfirmed;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Order;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class EmailService
 {
@@ -13,12 +15,17 @@ class EmailService
      */
     public function sendOrderConfirmation(Order $order)
     {
-        // TODO: Lấy thông tin User từ $order->user (Email, HoTen)
-        // TODO: Lấy danh sách sản phẩm từ $order->items (TenSach, SoLuong, GiaBan)
-        // TODO: Tạo một Mailable class (php artisan make:mail OrderConfirmed)
-        // TODO: Sử dụng Mail::to($email)->send(new OrderConfirmed($order));
-        
-        // Ghi chú: Nhắc thành viên cấu hình MAIL_HOST, MAIL_PORT trong file .env
+        $order->loadMissing(['user', 'items.book']);
+
+        $email = $order->user?->Email;
+        if (empty($email)) {
+            Log::warning('Không thể gửi email xác nhận đơn hàng do thiếu email khách hàng.', [
+                'order_id' => $order->ID,
+            ]);
+            return;
+        }
+
+        Mail::to($email)->send(new OrderConfirmed($order));
     }
 
     /**
